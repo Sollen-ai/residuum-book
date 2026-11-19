@@ -1,0 +1,830 @@
+# Spine of "The Residuum Programming Language".
+#
+# This file is both the table of contents and the writing brief. An agent
+# writing a section must read: the rules below, its own section entry, and
+# the `owners` map, and nothing else decides its scope.
+#
+# Structure: the Haskell chapter's eight parts (~/tableOfContentsHaskell.txt),
+# because Residuum, like Haskell and unlike Catala, is a general-purpose
+# language; plus the series' two Part 1 additions (source-to-execution
+# walkthrough and the criteria list, from ~/hanskellsen_docs/books/
+# programming-language and ~/toccatala.txt); plus the explicit semantic
+# labels of the revised Catala Part 3 (~/toccatala.txt) inside Part 6.
+#
+# Each section has:
+#   model     where its shape comes from (chapter, section)
+#   purpose   the one question the section answers
+#   covers    what it must contain
+#   excludes  what it must not contain, and which section owns that instead
+#   evidence  repository files the section is written from (paths relative to
+#             the residuum repo); claims outside this evidence need a citation
+#   listings  runnable examples it must include (kind: run | query | explain |
+#             execute | expect-error | include); output is generated, never typed
+#   words     target length
+# Part 2 sections also have `verdict: required`.
+
+book:
+  title: The Residuum Programming Language
+  language: en           # the series' PL chapters are in English (open decision)
+  repository: residuum   # the language repo the evidence paths refer to
+  pinned_commit: null    # set before writing; every evidence path and listing
+                         # is read and run at this commit
+
+rules:
+  - Write only from the evidence listed for the section, the language
+    reference (docs/language-reference.md) and the cited literature. Never
+    describe a feature, flag or behaviour that the pinned commit does not have.
+  - Every listing is a complete .res module or an include from the repo, and
+    its output is produced by the build. Never paste or invent output.
+  - Stay inside `covers`. When a topic belongs to another section (see
+    `owners`), give at most two sentences and a cross-reference (@sec:id).
+  - Classify claims the way the repo does - THEOREM, MODEL RESULT,
+    EXPERIMENTAL OBSERVATION, IMPLEMENTED + TESTED, NOT IMPLEMENTED - when the
+    evidence doc does.
+  - State limitations plainly; do not promise future work beyond what a doc
+    marks as pending.
+  - Use the series' terms (expressivity, well-definedness, ...) and Residuum's
+    own terms (Known, closure, residual requirement, seeds, premises, Program,
+    RuleUse, default, effect, FOUR least model) consistently; define each once,
+    in its owner section.
+  - Each listing has a caption and an explanation; the build moves the
+    explanation to the appendix "Listings explained".
+  - Paragraphs over 100 words, sentences over 38 words and comma runs of 4+
+    items fail the plain-language check (hanskellsen_docs lineamientos).
+
+# Concept -> owning section. Everyone else refers, briefly.
+owners:
+  pipeline_overview: s1.4
+  formal_grammar: s3.2
+  parsing: s3.4
+  type_system: s4.1
+  subtyping: s4.3
+  time_and_after: s4.4
+  rules_as_abstraction: s5.1
+  beta_reduction_substitution: s5.2
+  forward_vs_goal_directed: s5.3
+  partial_application: s5.7
+  programs: s5.6
+  monotonic_closure_meaning: s6.3
+  semi_naive_evaluation: s6.5
+  incremental_and_stepwise: s6.6
+  monotonic_core_laws: s6.7
+  residuation_and_abduction: s6.8
+  defaults: s6.9
+  four_entailment: s6.10
+  termination_and_limits: s6.11
+  effects_and_state: s7.4
+  resource_limits_runner: s7.2
+  performance_measurements: s7.6
+  legal_modeling: s8.2
+
+parts:
+  - id: p1
+    title: Introduction and Background
+    sections:
+      - id: s1.1
+        title: The Logic Programming Paradigm
+        model: Haskell 1.1 (The Functional Programming Paradigm)
+        purpose: What kind of language is Residuum?
+        covers:
+          - Declarative rule languages; Horn clauses; forward derivation of consequences.
+          - Residuum's specific mix - typed events with times, monotonic rules, residuation (what is still missing), and a separate non-monotonic default layer.
+          - The one-paragraph statement of what a Residuum program is (declarations + rules + experiments).
+        excludes:
+          - History (s1.2); design principles (s1.3); comparisons with Prolog/Datalog/Catala (s1.5).
+        evidence: [README.md, docs/v1-scope.md, docs/monotonic-core-specification.md]
+        listings: [{kind: run, what: smallest program with a seed, a rule and a derived event}]
+        words: 700
+
+      - id: s1.2
+        title: Origin and Development of Residuum
+        model: HAnSKELLsen PL 1.2; Haskell 1.2
+        purpose: Where did Residuum come from and how did it reach its current form?
+        covers:
+          - The name (residuation) and the problem it was built for.
+          - Milestones from the repository - the frozen v1 tag, the legal monotonic case, residual queries, Programs, defaults, the FOUR comparison, the 2026-11 optimizations - with dates from git history.
+          - The paused CNL frontend and why the active pipeline is Formal.
+        excludes:
+          - Technical detail of any milestone (owned by Parts 3-7).
+        evidence: [git log of the pinned commit, docs/v1-scope.md, docs/legal-monotonic-v1.md, docs/post-v1-integration-review.md, docs/worktree-integration-20261014.md]
+        listings: []
+        words: 800
+
+      - id: s1.3
+        title: Residuum's Design Philosophy
+        model: Haskell 1.3
+        purpose: Which principles decide what Residuum does and refuses to do?
+        covers:
+          - Monotonic core; the query layer never augments the Horn closure.
+          - Explicitness - scopes and bindings are stated, no silent grounding or existential enumeration.
+          - Certification - every residual explanation is replayed through the original producers.
+          - Honest classification of results (THEOREM vs MODEL RESULT vs OBSERVATION).
+          - Bounded execution as a design constraint.
+        excludes:
+          - The mechanisms themselves (Parts 5-6); the runner's limits in detail (s7.2).
+        evidence: [docs/monotonic-core-specification.md, docs/monotonic-core-laws.md, docs/residual-explicit-bindings-api.md, docs/legal-ontology-explicit-query-substitutions.md, AGENTS.md]
+        listings: []
+        words: 900
+
+      - id: s1.4
+        title: From Source Code to Machine Execution
+        model: HAnSKELLsen PL 1.3; Catala 1.3
+        purpose: What happens to a .res file between the command line and the answer?
+        covers:
+          - The stages Formal text -> SurfaceAST -> TypedAST -> derivation/runtime, with the module and function names of each stage (formal.rs, surface.rs, elab.rs, typed.rs, modules.rs, derive.rs, residual/, experiments.rs, runtime.rs).
+          - The launcher and the bounded runner as the entry point.
+          - What each stage can reject, with one real error message per stage.
+        excludes:
+          - Grammar detail (s3.2), parsing internals (s3.4), elaboration and typing (Part 4), evaluation algorithms (s6.5).
+        evidence: [src/formal.rs, src/surface.rs, src/elab.rs, src/typed.rs, src/modules.rs, src/derive.rs, src/bin/residuum.rs, residuum, scripts/test_safe.py]
+        listings:
+          - {kind: query, what: one module traced end to end}
+          - {kind: expect-error, what: one rejection from each of parse, elaboration and evaluation}
+        words: 1200
+
+      - id: s1.5
+        title: Position of Residuum in the Programming Language Landscape
+        model: Haskell 1.4
+        purpose: Where does Residuum sit relative to the languages a reader already knows?
+        covers:
+          - Datalog and Prolog (Horn rules, forward vs backward evaluation).
+          - Answer set programming and default logic (non-monotonic reasoning).
+          - Linear and residuated logics (the -o connective).
+          - Catala and HAnSKELLsen as legal-domain neighbours; Residuum as general-purpose.
+        excludes:
+          - Detailed evaluation against criteria (Part 2); formal semantics (Part 6).
+        evidence: [docs/four-model-entailment.md, docs/evidence-pair-models.md, docs/program-defaults.md, README.md (Catala comparison section)]
+        listings: []
+        words: 900
+
+      - id: s1.6
+        title: Criteria for Evaluating Programming Languages
+        model: HAnSKELLsen PL 1.4; Catala 1.4
+        purpose: Which criteria does Part 2 apply, and why these?
+        covers:
+          - The twelve criteria in the series' fixed order, one sentence each.
+          - Why criteria make the evaluation systematic and comparable across the series.
+        excludes:
+          - Any evaluation of Residuum (Part 2).
+        evidence: [~/hanskellsen_docs/books/programming-language/txt (1.4)]
+        listings: []
+        words: 400
+
+  - id: p2
+    title: Criteria for Evaluating Programming Languages
+    note: >
+      Every section follows the series pattern: generic definition; what the
+      criterion means for Residuum; numbered listings with at least one contrast
+      language; a closing verdict sentence ("Under this criterion, Residuum
+      performs ..."). Mechanisms are owned by Parts 3-7; here they are evaluated,
+      not explained.
+    sections:
+      - id: s2.1
+        title: Expressivity
+        model: HAnSKELLsen PL 2.1
+        purpose: What can be said directly in Residuum, and what needs encoding?
+        covers: [typed events with time, conjunction, unit, evidential negation, residual clauses, Programs, defaults, effects; what has no direct form (disjunction, quantifiers beyond rule parameters, arithmetic)]
+        excludes: [syntax details (Part 3), semantics (Part 6)]
+        evidence: [docs/language-reference.md, docs/peano-after-experiment.md, docs/temporal-constructors-experiment.md]
+        listings: [{kind: run, what: a rule set expressed in Residuum and the same in Prolog as contrast}]
+        verdict: required
+        words: 900
+
+      - id: s2.2
+        title: Well-Definedness
+        model: HAnSKELLsen PL 2.2 (four subsections)
+        purpose: Does every accepted program have exactly one meaning?
+        subsections:
+          - {title: Syntactic and Static Determinacy, covers: [unambiguous grammar, elaboration rejects ill-typed programs, duplicate symbols]}
+          - {title: Predictability of Evaluation, covers: [closure independent of rule order, deterministic stamps up to documented differences]}
+          - {title: Surface Meaning and Lowered Meaning, covers: [what TypedAST makes explicit that the surface hides - canonical substitutions, hygienic Program parameters]}
+          - {title: Conflict and Completeness, covers: [default conflicts, Horn incompleteness relative to FOUR, refusals instead of partial answers]}
+        excludes: [the semantics themselves (Part 6)]
+        evidence: [docs/monotonic-core-final-audit.md, docs/canonical-typed-substitutions.md, docs/program-consistency-contract.md, docs/four-model-entailment.md]
+        listings: [{kind: expect-error, what: an ambiguous or ill-typed program rejected}, {kind: run, what: rule order permuted, same closure}]
+        verdict: required
+        words: 1600
+
+      - id: s2.3
+        title: Data Types and Data Structures
+        model: HAnSKELLsen PL 2.3
+        purpose: How well do Residuum's types fit the data its programs reason about?
+        covers: [entities, fields, Set, optional, records, PropositionTime, the absence of numbers and strings as built-ins]
+        excludes: [the type system's rules (Part 4)]
+        evidence: [docs/language-reference.md, src/typed.rs]
+        listings: [{kind: run, what: an entity with fields and a record value used in a rule}]
+        verdict: required
+        words: 800
+
+      - id: s2.4
+        title: Modularity
+        model: HAnSKELLsen PL 2.4
+        purpose: How are larger Residuum programs divided and reused?
+        covers: [modules and imports, Programs and RuleUses, partial application as reuse, explicit query scopes]
+        excludes: [how Programs compile (s5.6)]
+        evidence: [src/modules.rs, docs/minimal-programs.md, docs/owns-reuse-experiment.md, docs/owns-interface-experiment.md]
+        listings: [{kind: query, what: a Program reused with two bindings}]
+        verdict: required
+        words: 900
+
+      - id: s2.5
+        title: Input and Output Facilities
+        model: HAnSKELLsen PL 2.5; Catala 2.5
+        purpose: How do facts get in and answers get out?
+        covers: [seeds and premises as input, experiments in the source file, CLI renderings (run, query, explain, execute), traceability of answers]
+        excludes: [effect execution mechanics (s7.4)]
+        evidence: [docs/executable-fixtures.md, docs/stepwise-evaluation.md, src/experiments.rs]
+        listings: [{kind: explain, what: justifications printed for a derived event}]
+        verdict: required
+        words: 800
+
+      - id: s2.6
+        title: Portability and Standardization
+        model: HAnSKELLsen PL 2.6
+        purpose: Where does Residuum run and what defines it?
+        covers: [Rust implementation, minimum Rust 1.87, Linux/cgroup v2 requirement of the runner, no external standard - the implementation and its tests are the definition, the frozen v1 tag]
+        excludes: [runner internals (s7.2)]
+        evidence: [Cargo.toml, .github/workflows/ci.yml, docs/v1-scope.md, README.md]
+        listings: []
+        verdict: required
+        words: 600
+
+      - id: s2.7
+        title: Efficiency and Performance
+        model: HAnSKELLsen PL 2.7
+        purpose: Is Residuum fast enough, and is its cost predictable?
+        covers: [summary of the measured costs and the 2026-11 speed-ups, with a reference to s7.6 for numbers]
+        excludes: [the measurements and method (s7.6), algorithms (s6.5)]
+        evidence: [docs/semi-naive-pending-optimizations.md, docs/compile-cost-optimizations.md]
+        listings: []
+        verdict: required
+        words: 600
+
+      - id: s2.8
+        title: Pedagogy and Learnability
+        model: HAnSKELLsen PL 2.8
+        purpose: How hard is Residuum to learn, and for whom?
+        covers: [the A <= C reading direction as a stumbling point, few constructs, examples-in-file workflow, the language reference]
+        excludes: [readability of programs (s2.11)]
+        evidence: [docs/language-reference.md, docs/executable-fixtures.md]
+        listings: [{kind: run, what: the reading-direction example}]
+        verdict: required
+        words: 700
+
+      - id: s2.9
+        title: Generality
+        model: HAnSKELLsen PL 2.9
+        purpose: Is Residuum general-purpose, and where does that stop?
+        covers: [non-legal programs - Peano arithmetic and polynomial products; legal programs; what it cannot do (general computation, unbounded search)]
+        excludes: [legal modeling in depth (s8.2)]
+        evidence: [docs/peano-after-experiment.md, docs/peano-multiplication-and-polynomial-boundary.md, docs/peano-polynomial-product-experiment.md, docs/legal-monotonic-v1.md]
+        listings: [{kind: include, what: a Peano arithmetic fixture}]
+        verdict: required
+        words: 800
+
+      - id: s2.10
+        title: Modeling Ability
+        model: Catala 2.10 (subsections), adapted
+        purpose: How directly can a domain's reasoning be written down?
+        subsections:
+          - {title: Monotonic Rules, covers: [consequences that never retract]}
+          - {title: Residual Requirements, covers: [what is still needed as a first-class answer]}
+          - {title: Defaults and Exceptions, covers: [non-monotonic override]}
+          - {title: Programs and Activation, covers: [behaviour attached to events]}
+        excludes: [mechanisms (Parts 5-6), the legal case study (s8.2, Appendix B)]
+        evidence: [docs/legal-abduction-harness.md, docs/program-defaults.md, docs/active-verb-programs.md]
+        listings: [{kind: query, what: one residual requirement}, {kind: run, what: one default blocked by an exception}]
+        verdict: required
+        words: 1400
+
+      - id: s2.11
+        title: Readability
+        model: HAnSKELLsen PL 2.11
+        purpose: Can a reader understand a Residuum program without running it?
+        covers: [declaration-first layout, explicit times, long rule heads in legal fixtures, comments]
+        excludes: [learnability (s2.8)]
+        evidence: [examples/legal/case_monotonic_formal.res, docs/language-reference.md]
+        listings: [{kind: include, what: an excerpt of a legal fixture}]
+        verdict: required
+        words: 700
+
+      - id: s2.12
+        title: Semantic Clarity
+        model: Catala 2.12 (subsections), adapted
+        purpose: Is it clear what a program means, at every layer?
+        subsections:
+          - {title: Closure Semantics, covers: [the least closure]}
+          - {title: Residual Semantics, covers: [requirements and certification]}
+          - {title: Default Selection, covers: [blocked, defeated, selected]}
+          - {title: Model-Theoretic Comparison, covers: [Horn vs FOUR]}
+        excludes: [the formal definitions (Part 6)]
+        evidence: [docs/monotonic-core-specification.md, docs/theory-model-bridge.md, docs/four-model-entailment.md]
+        listings: [{kind: query, what: Horn false and FOUR true on the same goal}]
+        verdict: required
+        words: 1200
+
+  - id: p3
+    title: Syntax and Formal Structure
+    sections:
+      - id: s3.1
+        title: Syntax as a Language Design Choice
+        model: Haskell 3.1; Catala 3.1
+        purpose: Why does Residuum's surface look the way it does?
+        covers: [declaration keywords, "@ for time", "<= and -o as connectives", the paused CNL alternative]
+        excludes: [the grammar (s3.2)]
+        evidence: [docs/language-reference.md, src/cnl.rs]
+        listings: []
+        words: 600
+      - id: s3.2
+        title: Grammars and Formal Specification
+        model: Haskell 3.2-3.3 (merged with BNF/EBNF)
+        purpose: What is the grammar of Formal, precisely?
+        covers: [an EBNF of the whole surface language derived from src/formal.rs, including the event-time restriction (@ name | @ after name)]
+        excludes: [parser implementation (s3.4)]
+        evidence: [src/formal.rs, src/surface.rs, docs/language-reference.md]
+        listings: [{kind: include, what: the EBNF, generated or checked against the parser}]
+        words: 1400
+      - id: s3.3
+        title: Lexical Structure, Comments and Whitespace
+        model: Haskell 3.5 (Layout Rule), adapted
+        purpose: What are the tokens, and does layout matter?
+        covers: [tokens, identifiers, comments, insignificant whitespace, trailing commas]
+        excludes: [grammar (s3.2)]
+        evidence: [src/formal.rs]
+        listings: [{kind: run, what: the same module formatted two ways}]
+        words: 500
+      - id: s3.4
+        title: Parsing and Syntactic Analysis
+        model: Haskell 3.4
+        purpose: How is Formal text turned into a SurfaceAST?
+        covers: [parser combinators (chumsky), the manual parser kept as a test oracle, error reporting by token position]
+        excludes: [elaboration (Part 4)]
+        evidence: [src/formal.rs, src/formal/]
+        listings: [{kind: expect-error, what: a parse error with its reported position}]
+        words: 900
+      - id: s3.5
+        title: Ambiguity and Disambiguation
+        model: Haskell 3.6; Catala 3.4
+        purpose: Can a Residuum text be read two ways?
+        covers: [no syntactic ambiguity; name resolution of constants vs parameters; homonymous binders]
+        excludes: [typing (Part 4)]
+        evidence: [docs/residual-query-source-bindings.md, src/elab.rs]
+        listings: [{kind: query, what: a binding whose value shares a parameter name}]
+        words: 600
+      - id: s3.6
+        title: Size and Complexity of the Grammar
+        model: Haskell 3.7
+        purpose: How big is the language?
+        covers: [count of keywords, declaration forms and term forms, compared with Haskell and Catala]
+        excludes: []
+        evidence: [src/formal.rs]
+        listings: []
+        words: 400
+
+  - id: p4
+    title: Types, Binding, and Scope
+    sections:
+      - id: s4.1
+        title: Role of Types in Residuum
+        model: Haskell 4.1
+        purpose: What do types prevent and what do they enable?
+        covers: [elaboration from SurfaceAST to TypedAST, typed verbs and events, why ill-typed rules never reach evaluation]
+        excludes: [subtyping (s4.3), time (s4.4)]
+        evidence: [src/elab.rs, src/typed.rs]
+        listings: [{kind: expect-error, what: an argument of the wrong entity type}]
+        words: 900
+      - id: s4.2
+        title: Entities, Records, Sets and Optional Values
+        model: Haskell 4.2 (Algebraic Data Types), adapted
+        purpose: What structured data can a program hold?
+        covers: [entity declarations with fields, record literals and canonical field order, Set, optional and none]
+        excludes: [evaluation of these values (Part 6)]
+        evidence: [docs/language-reference.md, docs/canonical-typed-substitutions.md]
+        listings: [{kind: run, what: records written in two field orders denoting one value}]
+        words: 900
+      - id: s4.3
+        title: Subtyping and the Absence of Implicit Coercion
+        model: Haskell 4.4, adapted
+        purpose: When may a value of one type stand for another?
+        covers: [entity subtyping with <:, assignability, no other coercions]
+        excludes: []
+        evidence: [src/elab.rs, docs/language-reference.md]
+        listings: [{kind: run, what: a subtype value accepted}, {kind: expect-error, what: a supertype value rejected}]
+        words: 600
+      - id: s4.4
+        title: Time as a Type
+        model: Residuum-specific
+        purpose: How does Residuum represent and compare times?
+        covers: [PropositionTime, after as a constructor, time parameters vs constants, the event-time syntax restriction, temporal identity]
+        excludes: [temporal termination (s6.11)]
+        evidence: [docs/temporal-identity-experiment.md, docs/temporal-constructors-experiment.md, src/temporal_term_tests.rs]
+        listings: [{kind: run, what: a rule relating t and after t}]
+        words: 900
+      - id: s4.5
+        title: Polymorphism
+        model: Haskell 4.5
+        purpose: Can one rule work over many types?
+        covers: [rule parameters typed by inference from verbs; no parametric polymorphism; consequences]
+        excludes: []
+        evidence: [src/elab.rs]
+        listings: []
+        words: 500
+      - id: s4.6
+        title: Strong Static Typing
+        model: Haskell 4.6
+        purpose: Is every type error caught before running?
+        covers: [what elaboration checks, what remains dynamic (query bindings checked at elaboration, runtime refusals)]
+        excludes: []
+        evidence: [src/elab.rs, src/residual/bindings.rs]
+        listings: [{kind: expect-error, what: a query binding of the wrong type}]
+        words: 600
+      - id: s4.7
+        title: Binding of Names to Values
+        model: Haskell 4.7
+        purpose: How do names get values?
+        covers: [constants, rule parameters bound by matching, query bindings, Program bindings]
+        excludes: [substitution mechanics (s5.2)]
+        evidence: [docs/residual-explicit-bindings-api.md, docs/minimal-programs.md]
+        listings: [{kind: query, what: a with binding fixing a parameter}]
+        words: 700
+      - id: s4.8
+        title: Scope and Hygiene
+        model: Haskell 4.8 (Lexical Scope and Shadowing)
+        purpose: Where is a name visible, and can names collide?
+        covers: [module scope, rule-local parameters, hygienic Program parameter names, imports]
+        excludes: []
+        evidence: [src/programs.rs, src/modules.rs]
+        listings: [{kind: query, what: two RuleUses of one rule with independent parameters}]
+        words: 700
+      - id: s4.9
+        title: Recursion and Cycles
+        model: Haskell 4.9
+        purpose: Can rules depend on themselves?
+        covers: [recursive rules, acyclicity checks for residual queries, cycles allowed in closure and FOUR]
+        excludes: [termination proofs (s6.11)]
+        evidence: [src/experiments.rs (require_acyclic), docs/executable-fixtures.md]
+        listings: [{kind: expect-error, what: a cyclic module refused by the residual runner}]
+        words: 600
+      - id: s4.10
+        title: Types as Documentation and Design
+        model: Haskell 4.10
+        purpose: How do declarations document a domain?
+        covers: [verb signatures as a domain vocabulary, legal ontology fixtures as examples]
+        excludes: [legal modeling (s8.2)]
+        evidence: [examples/experiments/legal_geometry/general.res]
+        listings: [{kind: include, what: the declaration block of a legal ontology}]
+        words: 500
+
+  - id: p5
+    title: Rules, Programs, and Parameter Passing
+    sections:
+      - id: s5.1
+        title: Rules as the Subprogram Abstraction
+        model: Haskell 5.1
+        purpose: What plays the role of a function in Residuum?
+        covers: [a rule as a lambda over its parameters, its body (Horn or residual clause), reading direction]
+        excludes: [semantics (Part 6)]
+        evidence: ["src/typed.rs (Rule, RuleBody)", docs/monotonic-core-specification.md]
+        listings: [{kind: run, what: one rule applied to two seeds}]
+        words: 700
+      - id: s5.2
+        title: Parameter Passing by Substitution
+        model: Haskell 5.2
+        purpose: How do arguments reach a rule body?
+        covers: [matching binds parameters; beta-reduction substitutes; canonical temporal values]
+        excludes: [partial application (s5.7)]
+        evidence: [src/derive.rs (substitute_*), src/elab.rs (substitute_rule_body), docs/canonical-typed-substitutions.md]
+        listings: [{kind: run, what: a derivation record showing its substitution}]
+        words: 800
+      - id: s5.3
+        title: Forward Derivation and Goal-Directed Search
+        model: Haskell 5.3 (Laziness and Call-by-Need), adapted
+        purpose: When is a rule used - eagerly forward, or on demand from a goal?
+        covers: [close as eager forward evaluation; residual queries as goal-directed search from the goal backwards; SearchLimits]
+        excludes: [the algorithms (s6.5, s6.8)]
+        evidence: [src/derive.rs, src/residual/, docs/active-residual-api.md]
+        listings: [{kind: query, what: the same rule set run forward and queried backward}]
+        words: 900
+      - id: s5.4
+        title: No Mutable State in Derivation
+        model: Haskell 5.4 (Absence of Call-by-Reference)
+        purpose: Can a rule change anything?
+        covers: [derivation only adds events; state changes only through effect execution, after closure]
+        excludes: [effect execution (s7.4)]
+        evidence: [docs/monotonic-core-specification.md, src/runtime.rs]
+        listings: []
+        words: 500
+      - id: s5.5
+        title: Multiple Conclusions and Multiple Derivations
+        model: Haskell 5.5 (Returning Multiple Results)
+        purpose: What if a rule fires many times, or an event has many proofs?
+        covers: [one rule, many instances; one event, many justifications; provenance records; proof costs as library functions]
+        excludes: [proof-cost algorithms (Appendix or s6.5 note)]
+        evidence: [src/derive/proof_cost.rs, docs/semi-naive-pending-optimizations.md (section 9)]
+        listings: [{kind: explain, what: an event with two justifications}]
+        words: 700
+      - id: s5.6
+        title: Programs as Rule Bundles
+        model: Haskell 5.6 (Higher-Order Functions), adapted
+        purpose: How are rules grouped, parameterized and attached to events?
+        covers: [program declarations, use and RuleUse, compilation to rule instances, verb-program association and activation]
+        excludes: [partial application (s5.7)]
+        evidence: [src/programs.rs, docs/minimal-programs.md, docs/active-verb-programs.md, docs/typed-verb-program-association.md]
+        listings: [{kind: query, what: an active residual query through a verb program}]
+        words: 1100
+      - id: s5.7
+        title: Currying and Partial Application
+        model: Haskell 5.7
+        purpose: Can rules and Programs be applied to some arguments now and the rest later?
+        covers: [rule partial application by position, program partial application, staged specialization]
+        excludes: []
+        evidence: [examples/experiments/temporal_beta_arguments.res, docs/legal-ontology-explicit-query-substitutions.md]
+        listings: [{kind: run, what: a rule applied in two stages equals the direct application}]
+        words: 800
+      - id: s5.8
+        title: Bindings and Type Safety
+        model: Haskell 5.8
+        purpose: Are bindings checked as strictly as arguments?
+        covers: [query and Program bindings validated against parameter types; scope rules for with]
+        excludes: []
+        evidence: [src/residual/bindings.rs, docs/residual-query-source-bindings.md]
+        listings: [{kind: expect-error, what: a binding outside the selected scope}]
+        words: 600
+      - id: s5.9
+        title: Implications for Incremental Evaluation
+        model: Haskell 5.9 (Implications for Concurrency), adapted
+        purpose: What does monotonicity buy for updating results?
+        covers: [incremental closure is possible because rules never retract; why defaults need care]
+        excludes: [incremental algorithms (s6.6)]
+        evidence: [docs/incremental-close.md, docs/dynamic-program-incremental-contract.md]
+        listings: []
+        words: 500
+
+  - id: p6
+    title: Semantic Foundations
+    note: Name the semantic tradition in each section title, as the revised Catala Part 3 does.
+    sections:
+      - id: s6.1
+        title: Meaning and Monotonicity
+        model: Haskell 6.1 (Referential Transparency), adapted
+        purpose: What property makes Residuum programs easy to reason about?
+        covers: [adding facts never removes conclusions; consequences for composition and caching]
+        excludes: [proofs (s6.7)]
+        evidence: [docs/monotonic-core-laws.md]
+        listings: []
+        words: 600
+      - id: s6.2
+        title: Informal and Formal Semantics in Residuum
+        model: Haskell 6.2
+        purpose: Where is Residuum's meaning written down, and how reliably?
+        covers: [specification docs, audits, the claim classes, tests as the executable definition]
+        excludes: []
+        evidence: [docs/monotonic-core-specification.md, docs/monotonic-core-audit.md, docs/monotonic-core-final-audit.md]
+        listings: []
+        words: 600
+      - id: s6.3
+        title: Closure as Least Model (Denotational Perspective)
+        model: Haskell 6.3; Catala 3.8 label
+        purpose: What mathematical object does a program denote?
+        covers: [the least set of events closed under the rules; fixpoint characterization]
+        excludes: [how it is computed (s6.5)]
+        evidence: [docs/monotonic-core-specification.md, docs/theory-model-bridge.md]
+        listings: [{kind: run, what: a small closure and its least model}]
+        words: 900
+      - id: s6.4
+        title: Semantic Domains
+        model: Haskell 6.4
+        purpose: What are the values meanings are built from?
+        covers: [Known as a set of stamped events; evidence pairs (p, n); the four values T, F, B, N]
+        excludes: [FOUR entailment (s6.10)]
+        evidence: [docs/evidence-pair-models.md, docs/four-twist-structures.md]
+        listings: []
+        words: 800
+      - id: s6.5
+        title: Semi-Naive Closure (Operational Perspective)
+        model: Haskell 6.5; Catala 3.9 label
+        purpose: How is the closure actually computed?
+        covers: [rounds, deltas and pivots, derivation stamps, the argument index and the depth-first join]
+        excludes: [measurements (s7.6), incremental updates (s6.6)]
+        evidence: [src/derive.rs, src/derive/join.rs, src/derive/known_index.rs, docs/semi-naive-pending-optimizations.md]
+        listings: [{kind: run, what: the --steps trace of a closure}]
+        words: 1300
+      - id: s6.6
+        title: Incremental and Stepwise Evaluation (Abstract Machines)
+        model: Haskell 6.6
+        purpose: How is evaluation resumed, updated and stepped?
+        covers: [IncrementalClosure, IncrementalProgramClosure, ForwardSession, DerivativeSession, the relevance filter]
+        excludes: [semi-naive basics (s6.5)]
+        evidence: [docs/incremental-close.md, docs/stepwise-evaluation.md, docs/discrete-derivative.md, src/derive/relevance.rs]
+        listings: [{kind: run, what: the --incremental base/delta comparison}]
+        words: 1100
+      - id: s6.7
+        title: Monotonic Core Laws (Axiomatic Perspective)
+        model: Haskell 6.7; Catala 3.5 label
+        purpose: Which laws does every Residuum program satisfy?
+        covers: [the laws of the monotonic core - unit, conjunction, monotonicity, idempotence - and their status (theorem vs tested)]
+        excludes: []
+        evidence: [docs/monotonic-core-laws.md, docs/monotonic-core-audit-followup.md]
+        listings: []
+        words: 1000
+      - id: s6.8
+        title: Residuation and Abduction
+        model: Residuum-specific; plays the role of Catala's default calculus (3.6) as the core contribution
+        purpose: What is a residual requirement and how is it found and certified?
+        covers: [residual clauses A <= B -o C; requirements as hypotheses; search with SearchLimits; certification by replay; active residual queries; explicit scopes and bindings]
+        excludes: [defaults (s6.9), FOUR (s6.10)]
+        evidence: [src/residual/, docs/active-residual-api.md, docs/residual-activation-contract.md, docs/program-residual-query.md, docs/residual-explicit-bindings-api.md, docs/legal-abduction-harness.md]
+        listings: [{kind: query, what: a requirement found and certified}, {kind: query, what: the same with an explicit scope}]
+        words: 1800
+      - id: s6.9
+        title: Defaults and Exceptions (Non-Monotonic Layer)
+        model: Catala 3.5-3.6 (non-monotonic reasoning, default calculus)
+        purpose: How does Residuum add overridable rules without breaking the monotonic core?
+        covers: [supernormal defaults, blocked when, exceptions with priority, the mandatory closure as context, selection outcomes]
+        excludes: [comparison with Catala beyond one paragraph (s1.5)]
+        evidence: [src/defaults.rs, docs/program-defaults.md, examples/legal/case_sale_defaults_formal.res]
+        listings: [{kind: run, what: a default selected, one blocked}]
+        words: 1300
+      - id: s6.10
+        title: FOUR Entailment and Its Relation to Horn
+        model: Residuum-specific
+        purpose: What follows in four-valued logic that Horn closure does not derive?
+        covers: [fusion and the unit filter, the least model, contraposition, scoped fourFusion queries, soundness of Horn relative to FOUR]
+        excludes: []
+        evidence: [docs/four-model-entailment.md, docs/executable-fixtures.md (FOUR sections), src/experiments/four.rs]
+        listings: [{kind: query, what: the contraposition counterexample}, {kind: query, what: a scoped fourFusion query}]
+        words: 1300
+      - id: s6.11
+        title: Termination, Partiality and Limits
+        model: Haskell 6.9 (Non-Termination and Partiality)
+        purpose: Does every program terminate, and what happens when it might not?
+        covers: [finite closure for ground rules, after-chains, acyclicity requirements, SearchLimits, refusals instead of truncated answers]
+        excludes: [runner resource limits (s7.2)]
+        evidence: [docs/incremental-close.md, docs/residual-compilation-cost.md, src/experiments.rs]
+        listings: [{kind: expect-error, what: a search that hits its limit}]
+        words: 900
+      - id: s6.12
+        title: Relationships Between Semantic Models
+        model: Haskell 6.10; Catala 3.10 (Correctness)
+        purpose: How do the closure, the residual answers and the FOUR models agree?
+        covers: [soundness and completeness results between the models; how the implementation is checked against oracles]
+        excludes: []
+        evidence: [docs/theory-model-bridge.md, docs/satisfaction-bridge-experiment.md, docs/refinement-four-order-comparison.md]
+        listings: []
+        words: 1000
+      - id: s6.13
+        title: "Worked Example: One Program from Source to Answer"
+        model: Catala 3.7.1
+        purpose: What does every stage do to one concrete program?
+        covers: [one module traced through parse, elaboration, closure, a residual query and a FOUR query, showing each intermediate form]
+        excludes: [new concepts - this section only applies Parts 3-6]
+        evidence: [the listing itself, docs/executable-fixtures.md]
+        listings: [{kind: query, what: the traced module, with intermediate forms}]
+        words: 1200
+
+  - id: p7
+    title: Pragmatics of Residuum
+    sections:
+      - id: s7.1
+        title: Pragmatics and Practical Concerns
+        model: Haskell 7.1
+        purpose: What does using Residuum day to day involve?
+        covers: [the launcher, fixtures as programs, the experiment workflow]
+        excludes: []
+        evidence: [README.md, residuum, docs/executable-fixtures.md]
+        listings: []
+        words: 500
+      - id: s7.2
+        title: Bounded Execution and Resource Limits
+        model: Haskell 7.2-7.3 (Memory Management, GC), adapted
+        purpose: How does Residuum keep execution bounded?
+        covers: [cgroup memory cap and stop, timeouts, growth detection, the binary refusing to run unbounded]
+        excludes: [performance numbers (s7.6)]
+        evidence: [scripts/test_safe.py, src/bin/residuum.rs, AGENTS.md]
+        listings: []
+        words: 800
+      - id: s7.3
+        title: Data Representation and Indexing
+        model: Haskell 7.3, adapted
+        purpose: How are events stored and found?
+        covers: [Known as an ordered vector, the header and argument index, provenance records]
+        excludes: [algorithms (s6.5)]
+        evidence: [src/derive/known_index.rs, docs/peano-known-index-experiment.md]
+        listings: []
+        words: 700
+      - id: s7.4
+        title: Effects and State Execution
+        model: Haskell 7.4 (Input and Output in a Pure Language)
+        purpose: How does a language whose rules cannot change anything still change state?
+        covers: [effect verbs and their += / -= bodies, the experiment state, execution order by after, conflicts]
+        excludes: []
+        evidence: [src/runtime.rs, README.md (execute section), examples/execution/]
+        listings: [{kind: execute, what: a sale and a resale}, {kind: execute, what: crossed sales reported as a conflict}]
+        words: 1000
+      - id: s7.5
+        title: Errors and Refusals
+        model: Haskell 7.5
+        purpose: What does Residuum do when it cannot answer?
+        covers: [error categories by stage, refusals instead of partial answers, error messages that name the fix]
+        excludes: []
+        evidence: [src/elab.rs (Error), src/residual/bindings.rs, docs/executable-fixtures.md]
+        listings: [{kind: expect-error, what: three representative errors}]
+        words: 700
+      - id: s7.6
+        title: Performance Predictability
+        model: Haskell 7.6
+        purpose: What does a program cost, measured?
+        covers: [the release benchmark and its method, the 2026-11 speed-ups, compile cost of the implementation]
+        excludes: []
+        evidence: [docs/semi-naive-pending-optimizations.md (Medición en release), docs/compile-cost-optimizations.md, examples/benchmark_closure.rs]
+        listings: []
+        words: 900
+      - id: s7.7
+        title: Concurrency and Runtime Support
+        model: Haskell 7.7
+        purpose: Does Residuum evaluate in parallel?
+        covers: [single-threaded evaluation by design; stepwise sessions; what parallelism monotonicity would allow]
+        excludes: []
+        evidence: [docs/stepwise-evaluation.md, scripts/test_safe.py]
+        listings: []
+        words: 400
+      - id: s7.8
+        title: Programming Style and Conventions
+        model: Haskell 7.8
+        purpose: How is good Residuum written and verified?
+        covers: [experiments in the file, fixtures as regression tests, claim classification in docs, CI]
+        excludes: []
+        evidence: [docs/executable-fixtures.md, .github/workflows/ci.yml]
+        listings: []
+        words: 600
+
+  - id: p8
+    title: Summary and Evaluation
+    sections:
+      - id: s8.1
+        title: Strengths and Limitations of Residuum
+        model: Haskell 8.1; Catala 4.1
+        purpose: What does Residuum do well and badly, overall?
+        covers: [synthesis of the Part 2 verdicts; the main limitations stated in Parts 4-7]
+        excludes: [new evidence]
+        evidence: [Part 2 verdicts]
+        listings: []
+        words: 900
+      - id: s8.2
+        title: Residuum as a Modeling Language
+        model: Haskell 8.2; Catala 4.2
+        purpose: How well does Residuum model a real domain?
+        covers: [the legal ontology and Riggs experiments as the main case; what modeling them showed]
+        excludes: [the full case study (Appendix B)]
+        evidence: [docs/legal-monotonic-v1.md, docs/legal-riggs-fixed-reference-experiment.md, docs/inferential-geometry-experimental-theory.md]
+        listings: [{kind: include, what: an excerpt of the Riggs fixture}]
+        words: 1100
+      - id: s8.3
+        title: Residuum in Research and Practice
+        model: Haskell 8.3
+        purpose: Who uses Residuum, and how?
+        covers: [research use, the experiment-driven workflow, CI and reproducibility]
+        excludes: []
+        evidence: [README.md, docs/*-experiment.md]
+        listings: []
+        words: 500
+      - id: s8.4
+        title: Relation to Other Language Designs
+        model: Haskell 8.4
+        purpose: What does Residuum borrow and what does it contribute?
+        covers: [borrowed - Datalog closure, default logic, residuated logic; contributed - certified residual requirements, scoped FOUR comparison]
+        excludes: [repeating s1.5]
+        evidence: [docs/four-model-entailment.md, docs/active-residual-api.md]
+        listings: []
+        words: 600
+
+  - id: p9
+    title: Final Summary
+    sections:
+      - id: s9.1
+        title: Final Summary
+        model: Catala 5
+        purpose: The chapter in one page.
+        covers: [one paragraph per Part]
+        excludes: [new claims]
+        evidence: [the book]
+        listings: []
+        words: 500
+
+back_matter:
+  - id: sources
+    title: Sources
+    note: Generated from the bibliography file; every citation in the book must resolve.
+  - id: appendix-a
+    title: "Appendix A: Listings Explained"
+    note: Generated - every listing's explanation, in listing order, with links back.
+  - id: appendix-b
+    title: "Appendix B: Case Study - A Legal Case from Text to Answer"
+    model: Catala Appendix B
+    purpose: Carry one legal case through Residuum end to end.
+    covers: [the legal text, its encoding, closure, residual requirements, defaults, FOUR, effects]
+    evidence: [examples/legal/case_monotonic_formal.res, examples/legal/case_sale_defaults_formal.res, docs/legal-monotonic-v1.md]
+    words: 2500
+  - id: appendix-c
+    title: "Appendix C: Language Reference"
+    note: Included from docs/language-reference.md at the pinned commit.
