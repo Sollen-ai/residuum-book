@@ -102,6 +102,26 @@ layout, institutional authors in citations, PDF outline and tags, authors
 repetition (Appendix A is an owner requirement). The reviewer read the
 booklet as the reading edition; send `out/residuum.pdf` to reviewers.
 
+## Denotational section from residuum-diagrams (2026-11-19)
+
+The owner asked for the compendium's order structures (`~/residuum-diagrams`,
+`compendio/compendio.tex`) in the book's denotational block, with readable
+names instead of a0, g, h. Added:
+- `book.diagrams` (path, commit `ac4727f`) and the `diagrams:<entry>`
+  evidence kind, checked by `check-spine` like repo evidence;
+- section `s6.14` after s6.4 (numbered 6.5): closed-state lattice,
+  requirements as upsets, the Heyting algebra and the residual answer as
+  Heyting implication, the extensional program order, cooperating rules,
+  fidelity. Owners `requirement_denotation` and `program_order`. Its example
+  is the compendium's six rules as an agent deciding whether to `send`;
+- `dot` figure blocks rendered by Graphviz at build time, alt text required;
+- two-sentence references in s6.3, s6.8, s6.10 and s6.12, and the
+  default-condition time rule in s6.9 (a compendium finding).
+residuum-diagrams computed its enumerations at residuum `f3c8df3`; the
+section's listings rerun the example at `d4d2282`. Known cosmetic issue:
+poppler prints "Embedded font file may be invalid" for WeasyPrint's font
+subsets; the pages render correctly.
+
 ## What the book needs from the Residuum repo
 
 The book never edits Residuum; these are requests to its owner.

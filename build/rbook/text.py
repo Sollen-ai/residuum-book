@@ -119,6 +119,9 @@ def _entry(book, entry, prose):
             title = block.title if entry.generated == "reference" else prose(block.title)
             number = f"{block.number} " if block.number else ""
             out += ["", f"{number}{title}", ""]
+        elif isinstance(block, Figure) and block.dot is not None:
+            out += [f"Figura {block.number}. {getattr(block, 'caption_text', block.caption)}", "",
+                    _indent(f"[Dibujo] {block.alt}"), ""]
         elif isinstance(block, Figure):
             out += [f"[Figura {block.number}. {block.caption_text if hasattr(block, 'caption_text') else block.caption}"
                     f" ({block.src})]", ""]

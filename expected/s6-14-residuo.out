@@ -1,0 +1,18 @@
+experiment nothing
+  Seeds: {}
+  goal: send() @ tau
+  Horn: false
+  Known after close: {}
+  requirement: ((((checked() @ tau ⊗ lowConfidence() @ tau) ∨ cached() @ tau) ∨ (cached() @ tau ⊗ checked() @ tau)) ∨ checked() @ tau)
+experiment onlyChecked
+  Seeds: {checked() @ tau}
+  goal: send() @ tau
+  Horn: true
+  Known after close: {checked() @ tau, verified() @ tau, send() @ tau}
+  requirement: ((lowConfidence() @ tau ∨ cached() @ tau) ∨ I)
+experiment checkedLowConfidence
+  Seeds: {checked() @ tau, lowConfidence() @ tau}
+  goal: send() @ tau
+  Horn: true
+  Known after close: {checked() @ tau, lowConfidence() @ tau, send() @ tau, ~send() @ tau, verified() @ tau}
+  requirement: (I ∨ cached() @ tau)

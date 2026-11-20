@@ -10,6 +10,7 @@ from . import DEFAULT_RESIDUUM
 from . import bib as bibmod
 from .book import BuildFailed, collect
 from .colophon import make_colophon
+from .diagrams import render_figures
 from .reference import load_reference
 from .checks import check_book, load_rules
 from .readability import FORMULAS
@@ -129,6 +130,7 @@ def cmd_build(args):
     other = list(errors)
     load_reference(book, args.residuum, errors)
     run_listings(book, make_runner(book, args), errors)
+    render_figures(book, Path(args.cache).resolve() if args.cache else book.root / ".cache", errors)
     colophon = make_colophon(book, args.residuum)
     page = render_book(book, errors, colophon)
     other += errors[len(other):]

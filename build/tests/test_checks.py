@@ -480,3 +480,29 @@ def test_placeholder_in_code_is_ignored(checked):
     append(checked, "s-uno", "\nEl código `TODO` no es un marcador.\n\n```text\nTODO\n```\n")
     code, out = checked.build()
     assert code == 0, out
+
+
+def test_diagrams_evidence_resolves_in_its_own_repo(tmp_path):
+    import subprocess, yaml
+    from rbook.spinecheck import check_spine
+    repo = tmp_path / "diag"
+    repo.mkdir()
+    (repo / "docs").mkdir()
+    (repo / "docs" / "a.md").write_text("# Teorema\nHeyting\n")
+    for cmd in (["init", "-q"], ["add", "-A"],
+                ["-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "x"]):
+        subprocess.run(["git", "-C", str(repo), *cmd], check=True)
+    commit = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                            capture_output=True, text=True).stdout.strip()
+    spine = {"book": {"title": "t", "pinned_commit": "x",
+                      "diagrams": {"path": str(repo), "commit": commit}},
+             "owners": {},
+             "parts": [{"id": "p1", "title": "P", "sections": [
+                 {"id": "s1.1", "title": "S", "purpose": "?", "covers": [], "excludes": [],
+                  "evidence": ["diagrams:docs/a.md (Heyting)", "diagrams:docs/b.md"],
+                  "listings": [], "words": 10}]}]}
+    path = tmp_path / "spine.yaml"
+    path.write_text(yaml.safe_dump(spine, allow_unicode=True))
+    _, errors, checked = check_spine(path, tmp_path / "nowhere")
+    assert checked == 2
+    assert len(errors) == 1 and "docs/b.md" in errors[0]

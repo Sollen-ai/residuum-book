@@ -134,6 +134,9 @@ def read_doc(text):
             j = i + 1
             while j < len(lines) and not close_re.match(lines[j]):
                 j += 1
+            if "{" in info and info[:info.index("{")].strip() == "dot":
+                i = j + 1          # a dot figure: code, not prose and not a listing
+                continue
             if "{" in info:
                 lang = info[:info.index("{")].strip()
                 run = re.search(r"\brun=(\S+?)(?=[\s}])", info)

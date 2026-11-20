@@ -1,0 +1,5 @@
+experiment onlyChecked
+  Seeds: {checked() @ tau}
+  goal: send() @ tau
+  Horn: false
+  Known after close: {checked() @ tau}

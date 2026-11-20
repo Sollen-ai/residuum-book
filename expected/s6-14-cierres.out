@@ -1,0 +1,20 @@
+experiment nothing
+  Seeds: {}
+  goal: send() @ tau
+  Horn: false
+  Known after close: {}
+experiment onlyChecked
+  Seeds: {checked() @ tau}
+  goal: send() @ tau
+  Horn: true
+  Known after close: {checked() @ tau, verified() @ tau, send() @ tau}
+experiment onlyCached
+  Seeds: {cached() @ tau}
+  goal: send() @ tau
+  Horn: true
+  Known after close: {cached() @ tau, send() @ tau}
+experiment checkedLowConfidence
+  Seeds: {checked() @ tau, lowConfidence() @ tau}
+  goal: send() @ tau
+  Horn: true
+  Known after close: {checked() @ tau, lowConfidence() @ tau, send() @ tau, ~send() @ tau, verified() @ tau}

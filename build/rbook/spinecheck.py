@@ -21,6 +21,9 @@ It checks that:
   - ``series:<path>``: the path exists after ``~`` expansion;
   - ``sec:<id>`` or ``sec:<a>..<b>``: the ids exist (``a`` before ``b``);
   - ``listing:self``: the section declares at least one listing.
+  - ``diagrams:<entry>``: any repo form above (path, anchor, line range,
+    glob), resolved in the residuum-diagrams repository at
+    ``book.diagrams.commit`` (``book.diagrams.path``), read-only.
 
 Files are read with ``git ls-tree`` and ``git show <commit>:<path>``, never
 from the working tree.
@@ -113,6 +116,10 @@ def check_spine(spine_path, residuum):
     commit = (spine.get("book") or {}).get("pinned_commit")
     repo = Repo(residuum, str(commit)) if commit is not None else None
     repo_problem = None
+    diagrams = (spine.get("book") or {}).get("diagrams")
+    diagrams_repo, diagrams_problem = None, None
+    if isinstance(diagrams, dict) and diagrams.get("path") and diagrams.get("commit"):
+        diagrams_repo = Repo(Path(str(diagrams["path"])).expanduser(), str(diagrams["commit"]))
     checked = 0
     for entry in entries:
         evidence = entry.get("evidence")
@@ -127,6 +134,24 @@ def check_spine(spine_path, residuum):
                 errors.append(f"{where}: debe ser un texto")
                 continue
             checked += 1
+            if item.startswith("diagrams:"):
+                if diagrams_repo is None:
+                    errors.append(f"{where}: falta book.diagrams (path y commit)")
+                    continue
+                if diagrams_problem is None:
+                    try:
+                        diagrams_repo.check_commit()
+                        diagrams_repo.files()
+                        diagrams_problem = ""
+                    except LookupError as error:
+                        diagrams_problem = str(error)
+                        errors.append(f"{name}: {diagrams_problem}")
+                if diagrams_problem:
+                    continue
+                problem = _evidence(item[len("diagrams:"):], entry, diagrams_repo, position)
+                if problem:
+                    errors.append(f"{where}: {problem}")
+                continue
             needs_repo = not item.startswith(("series:", "sec:", "listing:"))
             if needs_repo:
                 if repo is None:

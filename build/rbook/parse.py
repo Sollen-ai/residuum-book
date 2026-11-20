@@ -59,9 +59,12 @@ class Listing:
 class Figure:
     label: str
     caption: str
-    src: str
+    src: str              # image path; "" for a dot figure
     line: int
     number: int = 0
+    alt: str = ""         # a dot figure's alt text (an image figure uses its caption)
+    dot: str | None = None   # Graphviz source of a ```dot {#fig:...} block
+    svg: str | None = None   # set by diagrams.render_figures
 
 
 @dataclass
@@ -132,6 +135,13 @@ def parse_section(text, section_id, path, errors):
                 break
             info = fence.group("info").strip()
             body = "\n".join(lines[i + 1:j])
+            if "{" in info and info[:info.index("{")].strip() == "dot":
+                figure = _dot_figure(info, body, i, path, errors)
+                if figure:
+                    flush()
+                    parsed.blocks.append(figure)
+                i = j + 1
+                continue
             if "{" in info:
                 listing, i = _listing(info, body, lines, i, j, section_id, path, errors)
                 if listing:
@@ -191,6 +201,38 @@ def parse_section(text, section_id, path, errors):
         i += 1
     flush()
     return parsed
+
+
+def _dot_figure(info, body, start, path, errors):
+    """Parse ```dot {#fig:label caption="..." alt="..."}; return a Figure or None."""
+    where = f"{path}:{start + 1}"
+    if not info.endswith("}"):
+        errors.append(f"{where}: los atributos de la figura deben acabar en }}")
+        return None
+    try:
+        ident, attrs = parse_attrs(info[info.index("{") + 1:-1])
+    except ValueError as error:
+        errors.append(f"{where}: {error}")
+        return None
+    if not ident or not ident.startswith("fig:") or not re.fullmatch(LABEL, ident[4:]):
+        errors.append(f"{where}: la figura dot necesita una etiqueta #fig:<etiqueta> "
+                      "(letras, dígitos, _ o -)")
+        return None
+    label = ident[4:]
+    caption = (attrs.pop("caption", None) or "").strip()
+    alt = (attrs.pop("alt", None) or "").strip()
+    problems = []
+    if not caption:
+        problems.append("falta caption")
+    if not alt:
+        problems.append("falta alt (el texto alternativo que sustituye al dibujo)")
+    problems += [f"atributo desconocido: {key}" for key in attrs]
+    if not body.strip():
+        problems.append("el bloque dot está vacío")
+    if problems:
+        errors.append(f"{where}: figura {label}: " + "; ".join(problems))
+        return None
+    return Figure(label, caption, "", start + 1, alt=alt, dot=body + "\n")
 
 
 def _listing(info, body, lines, start, close, section_id, path, errors):

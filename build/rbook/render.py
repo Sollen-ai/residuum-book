@@ -79,6 +79,9 @@ code .w { white-space: nowrap; }
 p code, li code { overflow-wrap: normal; font-size: 8.5pt; }
 td code, th code { overflow-wrap: normal; font-size: 7.5pt; }
 .listing, figure { margin: 4mm 0; }
+/* A dot figure fits the measure and keeps its caption on the same page. */
+figure { break-inside: avoid; }
+figure.dot svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
 .caption { break-after: avoid; }
 .caption, figcaption, .table-caption, .output-label { font-size: 7.5pt; color: #333; }
 .output-label { margin-top: 0; }
@@ -90,6 +93,9 @@ td code, th code { overflow-wrap: normal; font-size: 7.5pt; }
 table { width: 100%; table-layout: auto; font-size: 8pt; }
 td, th { border: .5pt solid #999; overflow-wrap: normal; hyphenate-limit-chars: 9 4 4; }
 tr { break-inside: avoid; }
+thead { display: table-header-group; }
+.tbl.keep { break-inside: avoid; }
+.table-caption { break-before: avoid; }
 /* PDF outline: front matter, parts and back matter at level 1, sections and
    back-matter subsections at 2, subsections at 3. */
 nav h2, .colophon h2, section.front > h1, section.part > h1, section.back > h1 { bookmark-level: 1; }
@@ -125,6 +131,7 @@ pre { background: var(--code); padding: .75rem 1rem; overflow-x: auto; font-size
       hyphens: manual; }
 code { font-family: ui-monospace, "DejaVu Sans Mono", monospace; hyphens: manual; }
 .listing, figure { margin: 1.5rem 0; }
+figure.dot svg { display: block; max-width: 100%; height: auto; margin: 0 auto; background: #fff; }
 .caption, figcaption, .table-caption { font-family: system-ui, sans-serif; font-size: .9rem; color: var(--muted); }
 .caption b, figcaption b, .table-caption b { color: var(--fg); }
 .output-label { font-family: system-ui, sans-serif; font-size: .8rem; color: var(--muted); margin-top: -.5rem; }
@@ -409,7 +416,22 @@ def _section(book, entry, errors):
         html_blocks[key] = _block(book, block, f"{rel}:{block.line}", errors)
         pieces.append(f"\n\n{key}\n\n")
     rendered = MD.render("".join(pieces))
-    return PLACEHOLDER_RE.sub(lambda m: html_blocks[m.group(1)], rendered)
+    return _keep_tables(PLACEHOLDER_RE.sub(lambda m: html_blocks[m.group(1)], rendered))
+
+
+# A table and the caption that follows it travel as one block, so a page break
+# never strands the caption. Short tables are kept whole when they fit on a
+# page; longer ones may split, and their <thead> repeats on the next page.
+KEEP_TABLE_ROWS = 14
+TABLE_BLOCK_RE = re.compile(r'(<table>.*?</table>)(\s*<p class="table-caption"[^>]*>.*?</p>)?', re.S)
+
+
+def _keep_tables(html_text):
+    def wrap(match):
+        rows = match.group(1).count("<tr>")
+        cls = "tbl keep" if rows <= KEEP_TABLE_ROWS + 1 else "tbl"
+        return f'<div class="{cls}">{match.group(1)}{match.group(2) or ""}</div>'
+    return TABLE_BLOCK_RE.sub(wrap, html_text)
 
 
 def _block(book, block, where, errors):
@@ -419,6 +441,11 @@ def _block(book, block, where, errors):
         title = MD.renderInline(_prose(book, block.title, where, errors, link=False))
         block.html_title = title
         return f'<h{level} id="{block.anchor}">{number}{title}</h{level}>'
+    if isinstance(block, Figure) and block.dot is not None:
+        caption = html.escape(resolve_refs(block.caption, book.refs, where, errors, link=False))
+        drawing = block.svg or f'<p class="pending">{html.escape(block.alt)}</p>'   # dot failed: an error
+        return (f'<figure class="dot" id="fig-{block.label}">{drawing}'
+                f'<figcaption><b>Figura {block.number}.</b> {caption}</figcaption></figure>')
     if isinstance(block, Figure):
         caption = html.escape(resolve_refs(block.caption, book.refs, where, errors, link=False))
         return (f'<figure id="fig-{block.label}"><img src="{html.escape(block.src)}" alt="{caption}">'

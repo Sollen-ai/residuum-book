@@ -27,6 +27,9 @@
 #               series:<path>          a file outside the residuum repo
 #               sec:<id>[..<id>]       other sections of this book
 #               listing:self           the section's own listing
+#               diagrams:<entry>       any repo form above, resolved in the
+#                                      residuum-diagrams repo at
+#                                      book.diagrams.commit (read-only)
 #   listings  runnable examples it must include (kind: run | query | explain |
 #             execute | expect-error | include); output is generated, never typed
 #   words     target length
@@ -38,6 +41,10 @@ book:
   repository: residuum   # the language repo the evidence paths refer to
   pinned_commit: d4d2282 # every evidence path and listing is read and run at
                          # this commit (main, 2026-11-19, language reference)
+  diagrams:              # second read-only source of facts (owner, 2026-11-19):
+    path: ~/residuum-diagrams   # its own study of Residuum's order structures,
+    commit: ac4727f             # computed at residuum f3c8df3 (an ancestor of
+                                # pinned_commit); cited as `diagrams:<path>`
   authors:               # title page, colophon and PDF metadata (owner, 2026-11-19)
     - Jesús Antonio Sesma Espinoza
     - Claude (Anthropic)
@@ -104,6 +111,8 @@ owners:
   incremental_and_stepwise: s6.6
   monotonic_core_laws: s6.7
   residuation_and_abduction: s6.8
+  requirement_denotation: s6.14
+  program_order: s6.14
   defaults: s6.9
   four_entailment: s6.10
   termination_and_limits: s6.11
@@ -655,6 +664,40 @@ parts:
         evidence: [docs/evidence-pair-models.md, docs/four-twist-structures.md]
         listings: []
         words: 800
+      - id: s6.14
+        title: El significado de los requisitos y el orden entre programas (perspectiva denotacional)
+        model: "none (added 2026-11-19 from the residuum-diagrams study; placed after s6.4 in the denotational block)"
+        purpose: ¿Qué objeto matemático denota una respuesta residual, y cuándo dos programas significan lo mismo?
+        covers:
+          - "Los estados cerrados forman un retículo completo (THEOREM en el estudio de geometría de órdenes)."
+          - "El requisito de un objetivo como conjunto ascendente de evidencias suficientes, con su anticadena de soportes mínimos."
+          - "Los conjuntos ascendentes forman un álgebra de Heyting; la respuesta de query residual desde una evidencia S denota la implicación de Heyting de ↑S al requisito; qué denotan ⊗, ∨ e I."
+          - "El orden entre programas por inclusión de cierres, el cociente extensional, el join como unión de reglas y por qué la intersección de reglas no es el meet; el teorema de contextos que lo hace observable con la CLI."
+          - "Las reglas cooperan: el cierre y el requisito de una unión de reglas pueden superar la unión de sus partes; programas distintos con el mismo significado."
+          - "Fidelidad: la familia de requisitos de todos los átomos determina la clase de un programa."
+        excludes:
+          - "La búsqueda y la certificación del requisito (s6.8): aquí sólo su significado."
+          - "Los valores FOUR y el entailment (s6.4, s6.10); el vínculo con (p, n) se menciona y remite a s6.12."
+          - "La relabelización del ejemplo como agente de un artículo externo: el ejemplo se presenta por sí mismo."
+        evidence:
+          - docs/legal-ontology-order-geometry.md
+          - docs/monotonic-core-laws.md
+          - "diagrams:docs/02-estudio.md"
+          - "diagrams:docs/03-retículo-de-programas.md"
+          - "diagrams:compendio/compendio.tex"
+          - "diagrams:out/lattice_main.json"
+          - "diagrams:out/chain_main.txt"
+          - "diagrams:out/fidelity_main.txt"
+          - "diagrams:out/upsets3.txt"
+          - "sec:s6.8"
+        listings:
+          - {kind: run, what: "el ejemplo del agente con nombres legibles: el cierre de cada evidencia"}
+          - {kind: query, what: "la consulta residual desde varias evidencias, leída como implicación de Heyting"}
+          - {kind: run, what: "dos subprogramas que por separado no envían y juntos sí"}
+        figures: "Diagramas de Hasse generados en el build desde texto (bloques dot), con texto alternativo; al menos el álgebra de requisitos y el orden entre programas."
+        example: "Las seis reglas del compendio con nombres legibles: checked (a0), lowConfidence (a1), cached (a2), verified (h), send (g); r4 checked→verified, r5 verified→send, r0 checked & lowConfidence→send, r1 cached→send, r2 lowConfidence→~send, r3 cached & checked→send. Nunca a0, g, h en el texto."
+        words: 1400
+
       - id: s6.5
         title: Cierre semi-naive (perspectiva operacional)
         model: Haskell 6.5; Catala 3.9 label

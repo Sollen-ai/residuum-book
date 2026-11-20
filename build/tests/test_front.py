@@ -241,3 +241,14 @@ print("BOOKLET|" + booklet.metadata.get("/Title"))
     assert "META|Libro de prueba|Ana Pérez, Claude (Anthropic)|es" in lines
     assert "TAGGED|True|True" in lines
     assert "BOOKLET|Libro de prueba (folleto para imprimir)" in lines
+
+
+def test_table_and_caption_travel_together():
+    from rbook.render import _keep_tables
+    short = "<table><thead><tr><th>a</th></tr></thead><tbody><tr><td>1</td></tr></tbody></table>\n" \
+            '<p class="table-caption" id="tbl-x"><b>Tabla 1.</b> Corta</p>'
+    out = _keep_tables(short)
+    assert out.startswith('<div class="tbl keep"><table>') and out.endswith("</p></div>")
+    rows = "".join(f"<tr><td>{i}</td></tr>" for i in range(40))
+    long = f"<table><thead><tr><th>a</th></tr></thead><tbody>{rows}</tbody></table>"
+    assert _keep_tables(long).startswith('<div class="tbl"><table>')

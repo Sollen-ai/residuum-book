@@ -83,6 +83,38 @@ kinds and on `expect-error`.
 Figures: `![Pie](src){#fig:label}` alone on a line. Tables: a pipe table
 followed by the line `: Pie {#tbl:label}`.
 
+### Diagrams
+
+A fenced `dot` block with a figure label is a diagram drawn at build time:
+
+````text
+```dot {#fig:s6-14-requisitos caption="El álgebra de requisitos" alt="Diagrama de Hasse de ..."}
+digraph { rankdir=BT; a -> b; }
+```
+````
+
+- Required: `#fig:<label>`, `caption="..."` and a non-empty `alt="..."`
+  (the text that replaces the drawing); any other attribute, a missing one
+  or an empty body is an error in every mode, `--draft` included. A `dot`
+  fence without `{...}` is ordinary code.
+- It is a figure like `![…](src){#fig:…}`: one numbering, the "Índice de
+  figuras", `@fig:` references; a label used twice fails.
+- `diagrams.py` runs `/usr/bin/dot -Tsvg` with `-Gfontname`, `-Nfontname`
+  and `-Efontname` set to DejaVu Sans, the book's sans font; a `fontname`
+  in the source overrides them. A failure of `dot` is a build error that
+  quotes dot's stderr.
+- The SVG is cached in `.cache/dot/<sha256 of the source>.svg` (under
+  `--cache` when given); an unchanged block never calls `dot` again.
+- HTML and PDF: the SVG is inline (no XML prolog, doctype or comments; its
+  ids prefixed with `fig-<label>-`), with `role="img"` and `aria-label` = alt
+  on the `<svg>`, inside `<figure class="dot">` with the numbered
+  `<figcaption>`. In print it fits the measure (`max-width: 100%`, height
+  auto) and the figure does not split from its caption (`break-inside:
+  avoid`).
+- Plain text: "Figura N. caption" and the alt text, not the source.
+- The block is code: it is not prose for the checks and does not count
+  toward words, and it is not a listing (Part 2 template, Appendix A).
+
 References: `@sec:<spine id or heading label>`, `@lst:`, `@fig:`, `@tbl:`
 become "sección 6.8", "parte 2", "apéndice B", "listado 3", "figura 2",
 "tabla 1", linked. `@Sec:` capitalises. Inside inline code they are left
