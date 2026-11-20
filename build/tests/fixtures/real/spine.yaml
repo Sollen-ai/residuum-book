@@ -1,0 +1,13 @@
+# Fixture for the real Residuum launcher (opt-in test, RBOOK_REAL_LAUNCHER=1).
+book:
+  title: Prueba con el launcher real
+  pinned_commit: d4d2282
+parts:
+  - id: p1
+    title: Parte real
+    sections:
+      - id: s-real
+        title: Real
+back_matter:
+  - id: appendix-a
+    title: Listados

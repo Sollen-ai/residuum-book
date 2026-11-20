@@ -1,0 +1,1 @@
+residuum: s2-6-tensor.res: formal lex error: Simple { span: 388..389, reason: Unexpected, expected: {None, Some('#'), Some('('), Some('≤'), Some('?'), Some(':'), Some('-'), Some('<'), Some('"'), Some('='), Some('+'), Some('.'), Some('~'), Some('@'), Some('}'), Some(')'), Some('⊸'), Some('{'), Some('&'), Some(','), Some('/')}, found: Some('⊗'), label: None }

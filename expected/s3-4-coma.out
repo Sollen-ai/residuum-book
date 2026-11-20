@@ -1,0 +1,1 @@
+residuum: s3-4-coma.res: formal parse error: Simple { span: 64..65, reason: Unexpected, expected: {Some(RParen), Some(Comma), Some(LBrace)}, found: Some(Ident("object")), label: None }

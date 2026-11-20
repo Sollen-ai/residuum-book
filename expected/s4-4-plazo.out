@@ -1,0 +1,15 @@
+experiment sameInstant
+  Seeds: {notified(ana) @ tau}
+  goal: mayAppeal(ana) @ tau
+  Horn: false
+  Known after close: {notified(ana) @ tau, mayAppeal(ana) @ after(tau)}
+experiment nextInstant
+  Seeds: {notified(ana) @ tau}
+  goal: mayAppeal(ana) @ after(tau)
+  Horn: true
+  Known after close: {notified(ana) @ tau, mayAppeal(ana) @ after(tau)}
+experiment fixedInstant
+  Seeds: {notified(ana) @ tau}
+  goal: archived(ana) @ after(deadline)
+  Horn: false
+  Known after close: {notified(ana) @ tau, mayAppeal(ana) @ after(tau)}

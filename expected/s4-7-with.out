@@ -1,0 +1,8 @@
+experiment atMain
+  Seeds: {requests(ana, book) @ tau}
+  goal: lent(ana, book) @ tau
+  Horn: false
+  search scope: rules {lending}
+  query bindings: {rule lending.office = main}
+  Known after close: {requests(ana, book) @ tau}
+  requirement: open(main) @ tau

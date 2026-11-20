@@ -1,0 +1,19 @@
+# Fixture spine: two parts, one section each, plus the generated appendix.
+book:
+  title: Libro de prueba
+  language: es
+  pinned_commit: abc1234
+parts:
+  - id: p1
+    title: Primera parte
+    sections:
+      - id: s-alfa
+        title: Alfa
+  - id: p2
+    title: Segunda parte
+    sections:
+      - id: s-beta
+        title: Beta
+back_matter:
+  - id: appendix-a
+    title: "Appendix A: Listings Explained"

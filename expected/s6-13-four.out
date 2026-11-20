@@ -1,0 +1,9 @@
+experiment noDebt
+  Premises: {pays(bob, car, ana) @ tau, ~owes(ana, car, bob) @ after(tau)}
+  goal: ~agrees(ana, car, bob) @ tau
+  Horn: false
+  search scope: rules {sale}
+  query bindings: {rule sale.seller = ana, rule sale.object = car, rule sale.buyer = bob, rule sale.t = tau}
+  Known after close: {pays(bob, car, ana) @ tau, ~owes(ana, car, bob) @ after(tau)}
+  FOUR fusion: true (5 models / 64 interpretations)
+  FOUR least model: true (goal T; 3 atoms, 5 clauses; explicit scope)

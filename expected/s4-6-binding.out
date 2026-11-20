@@ -1,0 +1,1 @@
+residuum: s4-6-binding.res: query binding `lending.person` has type Entity("Thing"); expected Entity("Person")

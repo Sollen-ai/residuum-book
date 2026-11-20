@@ -1,0 +1,63 @@
+experiment plain
+  default context: mandatory Horn closure (1 events)
+  blocking scope: RuleLambda
+  consistency: NotChecked
+  default NormalSale -> normalSale: selected
+    default origin: VentaConReserva (s6-9-reserva.res)
+    lambda origin: VentaConReserva
+    applicability: unconditional
+    blocking: no matching blocker
+    selection: applicable, unblocked, not defeated
+  default RetentionSale -> retentionSale: not applicable
+    default origin: VentaConReserva (s6-9-reserva.res)
+    lambda origin: VentaConReserva
+    applicability: no matching evidence
+    declared priority: exception to NormalSale
+  selected default lambdas: normalSale
+  Seeds: {sale(saleCase) @ tau}
+  goal: selected(saleCase, Plain) @ tau
+  Horn: true
+  Known after close: {sale(saleCase) @ tau, selected(saleCase, Plain) @ tau}
+experiment retention
+  default context: mandatory Horn closure (2 events)
+  blocking scope: RuleLambda
+  consistency: NotChecked
+  default NormalSale -> normalSale: defeated
+    default origin: VentaConReserva (s6-9-reserva.res)
+    lambda origin: VentaConReserva
+    applicability: unconditional
+    blocking: no matching blocker
+    priority: displaced by an applicable, unblocked exception
+  default RetentionSale -> retentionSale: selected
+    default origin: VentaConReserva (s6-9-reserva.res)
+    lambda origin: VentaConReserva
+    applicability evidence: retentionAgreed(saleCase) @ tau
+      substitution: {saleId=saleCase, t=tau}
+    blocking: no matching blocker
+    declared priority: exception to NormalSale
+    selection: applicable, unblocked, not defeated
+  selected default lambdas: retentionSale
+  Seeds: {sale(saleCase) @ tau, retentionAgreed(saleCase) @ tau}
+  goal: selected(saleCase, Retention) @ tau
+  Horn: true
+  Known after close: {sale(saleCase) @ tau, retentionAgreed(saleCase) @ tau, selected(saleCase, Retention) @ tau}
+experiment disputedSale
+  default context: mandatory Horn closure (3 events)
+  blocking scope: RuleLambda
+  consistency: NotChecked
+  default NormalSale -> normalSale: blocked
+    default origin: VentaConReserva (s6-9-reserva.res)
+    lambda origin: VentaConReserva
+    applicability: unconditional
+    blocking evidence: disputed(saleCase) @ tau
+      substitution: {saleId=saleCase, t=tau}
+  default RetentionSale -> retentionSale: not applicable
+    default origin: VentaConReserva (s6-9-reserva.res)
+    lambda origin: VentaConReserva
+    applicability: no matching evidence
+    declared priority: exception to NormalSale
+  selected default lambdas:
+  Seeds: {sale(saleCase) @ tau, complaint(saleCase) @ tau}
+  goal: selected(saleCase, Plain) @ tau
+  Horn: false
+  Known after close: {sale(saleCase) @ tau, complaint(saleCase) @ tau, disputed(saleCase) @ tau}

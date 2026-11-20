@@ -1,0 +1,6 @@
+experiment sixteen
+  Seeds: {}
+  goal: s16() @ tau
+  Horn: false
+  Known after close: {}
+  requirement: s0() @ tau

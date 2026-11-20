@@ -1,0 +1,118 @@
+# Machine-readable plain-language rules for the book (Spanish).
+#
+# Source: lineamientos_lenguaje_llano.txt (this directory, copied verbatim from
+# ~/hanskellsen_docs, sha256 8efc3dba...). Thresholds and patterns are the
+# ones the series already applied in
+# ~/hanskellsen_docs/books/hanskellsen/audit_lenguaje_llano.json (18 ago 2026),
+# so this book is checked the same way as the HAnSKELLsen monograph.
+#
+# Scope: prose only. Code blocks, listing bodies, program output, headings,
+# list items' leading markers, tables and the terms in terms.txt are not
+# checked as prose.
+#
+# Thresholds are inclusive: a value equal to the threshold is a finding
+# (the audit flagged 38-word sentences and 100-word paragraphs).
+#
+# Policy:
+#   hard     fails a final build; reported (not failing) in --draft
+#   advisory reported only; a human decides (the patterns are heuristics)
+
+language: es
+
+thresholds:
+  sentence_words: 38          # "Frases cortas"
+  paragraph_words: 100        # "Párrafos eternos"
+  sentence_commas: 4          # "Enumeración sin lista": make it a list
+  one_sentence_paragraph_run: 4   # "Párrafos de una sola oración": this many in a row
+
+rules:
+  - id: frases_cortas
+    label: Frases cortas
+    policy: hard
+    check: sentence word count >= thresholds.sentence_words
+
+  - id: parrafos_eternos
+    label: Párrafos eternos
+    policy: hard
+    check: paragraph word count >= thresholds.paragraph_words
+
+  - id: listas
+    label: Enumeración sin lista
+    policy: hard
+    check: commas in one sentence >= thresholds.sentence_commas
+
+  - id: parrafos_una_oracion
+    label: Párrafos de una sola oración
+    policy: advisory
+    check: consecutive one-sentence paragraphs >= thresholds.one_sentence_paragraph_run
+
+  - id: voz_pasiva
+    label: Voz pasiva
+    policy: advisory
+    note: ser + participio (+ por). The reflexive passive with "se" is not flagged.
+    patterns:
+      - '\b(es|son|fue|fueron|era|eran|será|serán|sea|sean|ha sido|han sido|había sido|habían sido)\s+\w+(ado|ada|ados|adas|ido|ida|idos|idas|to|ta|tos|tas|cho|cha|chos|chas)\s+por\b'
+
+  - id: conectores
+    label: Conectores de secuencia
+    policy: advisory
+    note: >
+      The lineamientos forbid repeating sequence connectors. A connector that
+      opens a sentence is reported; one used more than once in a section is
+      reported again for each repetition.
+    sentence_initial:
+      - Por esta razón
+      - Primero
+      - Para empezar
+      - Luego
+      - Durante
+      - Finalmente
+      - De este modo
+      - En este sentido
+      - A su vez
+
+  - id: relleno
+    label: Palabras de relleno
+    policy: advisory
+    patterns:
+      - '\bde (manera|forma|modo) \w+(a|e|al|ble)\b'
+      - '\ba su vez\b'
+      - '\ben torno a\b'
+      - '\bde este modo\b'
+      - '\bcabe (señalar|destacar|mencionar) que\b'
+      - '\bes importante (señalar|destacar|mencionar) que\b'
+      - '\bbásicamente\b'
+      - '\ben el marco de\b'
+      - '\ba nivel de\b'
+
+  - id: jerga
+    label: Jerga pesada / rebuscada
+    policy: advisory
+    note: Administrative and bureaucratic forms; terms.txt entries are exempt.
+    patterns:
+      - '\bdich[oa]s?\b'
+      - '\b(los|las) mism[oa]s\b(?!\s+\w)'   # anaphoric "los mismos" at phrase end
+      - '\brespectiv[oa]s?\b'
+      - '\bpone de manifiesto\b'
+      - '\ben virtud de\b'
+      - '\ba efectos de\b'
+      - '\bes menester\b'
+
+readability:
+  formula: fernandez-huerta    # 206.84 - 0.60 P - 1.02 F; P = syllables per
+                               # 100 words, F = words per sentence (the form
+                               # flesch_kincaid.py uses; with F as sentences
+                               # per 100 words, shorter sentences would score
+                               # as harder)
+  policy: report               # reported per section in out/report.md, never fails
+  implementation: ~/hanskellsen_docs/flesch_kincaid.py (Spanish branch; reuse
+                  its syllable counter rather than writing a new one)
+
+terms:
+  file: terms.txt              # one spelling per term; exempt from jargon
+  variants: >
+    An entry may carry an optional fifth tab-separated field, `avoid:` followed
+    by comma-separated spellings (e.g. `avoid: semillas, closure`). Each
+    avoided spelling found in prose is a hard finding. Entries without the
+    field only exempt the term.
+  policy: hard

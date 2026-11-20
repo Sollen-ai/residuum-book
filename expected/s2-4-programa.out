@@ -1,0 +1,24 @@
+experiment forAna
+  Seeds: {notified(ana) @ tau}
+  goal: closed(ana) @ after(tau)
+  Horn: false
+  search scope: program Case
+  query bindings: {program Case.person = ana}
+  Known after close: {notified(ana) @ tau, served(ana) @ tau}
+  requirement: paid(ana) @ tau
+experiment forBob
+  Seeds: {notified(bob) @ tau, paid(bob) @ tau}
+  goal: closed(bob) @ after(tau)
+  Horn: true
+  search scope: program Case
+  query bindings: {program Case.person = bob}
+  Known after close: {notified(bob) @ tau, paid(bob) @ tau, served(bob) @ tau, closed(bob) @ after(tau)}
+  requirement: I
+experiment partial
+  Seeds: {notified(ana) @ tau}
+  goal: closed(ana) @ after(tau)
+  Horn: false
+  search scope: program AnaCase
+  query bindings: {program AnaCase.t = tau}
+  Known after close: {notified(ana) @ tau, served(ana) @ tau}
+  requirement: paid(ana) @ tau

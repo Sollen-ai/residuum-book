@@ -1,0 +1,10 @@
+experiment withExtra
+  Seeds: {books(ana, Slot {...}, car) @ tau}
+  goal: reserved(Slot {...}, car) @ after(tau)
+  Horn: true
+  Known after close: {books(ana, Slot {...}, car) @ tau, reserved(Slot {...}, car) @ after(tau)}
+experiment withoutExtra
+  Seeds: {books(ana, Slot {...}, none) @ tau}
+  goal: reserved(Slot {...}, none) @ after(tau)
+  Horn: true
+  Known after close: {books(ana, Slot {...}, none) @ tau, reserved(Slot {...}, none) @ after(tau)}

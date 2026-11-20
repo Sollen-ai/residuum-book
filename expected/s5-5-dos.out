@@ -1,0 +1,24 @@
+experiment both
+  goal: result() @ tau
+  #1 result() @ tau
+    verb origin: DosCaminos (s5-5-dos.res)
+    rule consequence | derivedAt d3
+      rule origin: DosCaminos (s5-5-dos.res)
+      substitution: {t=tau}
+      antecedents: #2
+  #2 shared() @ tau
+    verb origin: DosCaminos (s5-5-dos.res)
+    rule fromA | derivedAt d1
+      rule origin: DosCaminos (s5-5-dos.res)
+      substitution: {t=tau}
+      antecedents: #3
+    rule fromB | derivedAt d2
+      rule origin: DosCaminos (s5-5-dos.res)
+      substitution: {t=tau}
+      antecedents: #4
+  #3 A() @ tau
+    verb origin: DosCaminos (s5-5-dos.res)
+    seed
+  #4 B() @ tau
+    verb origin: DosCaminos (s5-5-dos.res)
+    seed

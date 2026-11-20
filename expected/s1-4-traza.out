@@ -1,0 +1,6 @@
+experiment onlyRequest
+  Seeds: {requests(ana, book) @ tau}
+  goal: lent(ana, book) @ tau
+  Horn: false
+  Known after close: {requests(ana, book) @ tau}
+  requirement: available(book) @ tau

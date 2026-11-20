@@ -1,0 +1,10 @@
+experiment base
+  Seeds: {agreesPrice(alice, car, bob) @ tau}
+  goal: deliverable(alice, car, bob) @ tau
+  Horn: false
+  Known after close: {agreesPrice(alice, car, bob) @ tau}
+experiment union
+  Seeds: {agreesPrice(alice, car, bob) @ tau, agreesObject(bob, car, alice) @ tau}
+  goal: deliverable(alice, car, bob) @ tau
+  Horn: true
+  Known after close: {agreesPrice(alice, car, bob) @ tau, agreesObject(bob, car, alice) @ tau, saleEstablished(alice, car, bob) @ tau, deliverable(alice, car, bob) @ tau}

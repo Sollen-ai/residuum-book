@@ -1,0 +1,27 @@
+experiment right
+  goal: recorded(juan, oldDate) @ after(tau)
+  #1 recorded(juan, oldDate) @ after(tau)
+    verb origin: Etapas (s5-7-etapas.res)
+    rule remember | derivedAt d1
+      rule origin: Etapas (s5-7-etapas.res)
+      substitution: {effective=oldDate, subject=juan, t=tau}
+      antecedents: #2
+    rule partiallyRemember | derivedAt d2
+      rule origin: Etapas (s5-7-etapas.res)
+      substitution: {subject=juan, t=tau}
+      antecedents: #2
+    rule fixedRemember | derivedAt d3
+      rule origin: Etapas (s5-7-etapas.res)
+      substitution: {}
+      antecedents: #2
+    rule directRemember | derivedAt d4
+      rule origin: Etapas (s5-7-etapas.res)
+      substitution: {}
+      antecedents: #2
+    rule inlineRemember | derivedAt d5
+      rule origin: Etapas (s5-7-etapas.res)
+      substitution: {}
+      antecedents: #2
+  #2 observed(juan, oldDate) @ tau
+    verb origin: Etapas (s5-7-etapas.res)
+    seed

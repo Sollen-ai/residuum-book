@@ -1,0 +1,6 @@
+experiment cadena
+  Premises: {~E() @ tau}
+  goal: ~A() @ tau
+  Horn: false
+  Known after close: {~E() @ tau}
+  FOUR least model: true (goal T; 5 atoms, 9 clauses)

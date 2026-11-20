@@ -1,0 +1,25 @@
+# The PDF and booklet outputs (./book build --pdf | --booklet | --all) run in
+# .venv/ at the repository root:
+#   python3 -m venv .venv && .venv/bin/pip install -r build/requirements.txt
+# HTML and plain-text builds use the system python3 with the first three.
+# WeasyPrint also needs the system libraries pango, harfbuzz and fontconfig.
+markdown-it-py==4.0.0
+Jinja2==3.1.6
+PyYAML==6.0.3
+weasyprint==70.0
+pypdf==7.1.1
+# Installed by weasyprint (pinned for a reproducible venv):
+brotli==1.2.1
+cffi==2.1.1
+cssselect2==0.10.1
+fonttools==4.68.0
+MarkupSafe==3.0.4
+mdurl==0.1.2
+pillow==13.0.0
+pycparser==3.12
+pydyf==0.13.0
+pyphen==0.18.1
+tinycss2==1.5.1
+tinyhtml5==2.1.0
+webencodings==0.6.1
+zopfli==0.4.3

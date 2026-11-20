@@ -1,0 +1,5 @@
+experiment hiredAna
+  Seeds: {hired(ana) @ tau}
+  goal: covered(ana) @ tau
+  Horn: true
+  Known after close: {hired(ana) @ tau, employee(ana) @ tau, insured(ana) @ tau, badge(ana) @ tau, covered(ana) @ tau}

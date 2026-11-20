@@ -1,0 +1,16 @@
+experiment boundRule
+  Seeds: {agreesPrice(alice, car, bob) @ tau}
+  goal: give(alice, car, bob) @ after(tau)
+  Horn: false
+  search scope: rules {sales}
+  query bindings: {rule sales.creditor = bob, rule sales.t = tau}
+  Known after close: {agreesPrice(alice, car, bob) @ tau}
+  requirement: agreesObject(bob, car, alice) @ tau
+experiment boundProgram
+  Seeds: {agreesPrice(alice, car, bob) @ tau}
+  goal: give(alice, car, bob) @ after(tau)
+  Horn: false
+  search scope: program Sale
+  query bindings: {program Sale.creditor = bob}
+  Known after close: {agreesPrice(alice, car, bob) @ tau}
+  requirement: agreesObject(bob, car, alice) @ tau

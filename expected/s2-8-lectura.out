@@ -1,0 +1,10 @@
+experiment conLluvia
+  Seeds: {llueve(mayor) @ tau}
+  goal: mojada(mayor) @ tau
+  Horn: true
+  Known after close: {llueve(mayor) @ tau, mojada(mayor) @ tau}
+experiment sinLluvia
+  Seeds: {}
+  goal: mojada(mayor) @ tau
+  Horn: false
+  Known after close: {}

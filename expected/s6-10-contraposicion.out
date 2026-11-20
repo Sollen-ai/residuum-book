@@ -1,0 +1,7 @@
+experiment contraposition
+  Premises: {~Q() @ tau}
+  goal: ~P() @ tau
+  Horn: false
+  Known after close: {~Q() @ tau}
+  FOUR fusion: true (3 models / 16 interpretations)
+  FOUR least model: true (goal T; 2 atoms, 3 clauses)

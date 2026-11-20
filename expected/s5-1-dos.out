@@ -1,0 +1,5 @@
+experiment twoSales
+  Seeds: {sells(ana, libro, luis) @ tau, sells(luis, mapa, ana) @ tau, paid(luis, libro) @ tau}
+  goal: owns(ana, mapa) @ after(tau)
+  Horn: true
+  Known after close: {sells(ana, libro, luis) @ tau, sells(luis, mapa, ana) @ tau, paid(luis, libro) @ tau, owns(luis, libro) @ after(tau), owns(ana, mapa) @ after(tau), delivered(libro, luis) @ after(tau)}

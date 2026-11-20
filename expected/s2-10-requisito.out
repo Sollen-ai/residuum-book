@@ -1,0 +1,12 @@
+experiment nada
+  Seeds: {}
+  goal: prestado(ana, libro) @ tau
+  Horn: false
+  Known after close: {}
+  requirement: (solicita(ana, libro) @ tau ⊗ disponible(libro) @ tau)
+experiment soloSolicitud
+  Seeds: {solicita(ana, libro) @ tau}
+  goal: prestado(ana, libro) @ tau
+  Horn: false
+  Known after close: {solicita(ana, libro) @ tau}
+  requirement: disponible(libro) @ tau

@@ -1,0 +1,5 @@
+experiment both
+  Seeds: {agreesPrice(ana, car, bob) @ tau, agreesObject(bob, car, ana) @ tau}
+  goal: deliverable(ana, car, bob) @ after(tau)
+  Horn: true
+  Known after close: {agreesPrice(ana, car, bob) @ tau, agreesObject(bob, car, ana) @ tau, saleEstablished(ana, car, bob) @ tau, deliverable(ana, car, bob) @ after(tau), registryOpen(car) @ tau}

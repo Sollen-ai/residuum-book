@@ -1,0 +1,5 @@
+experiment anaBorrows
+  Seeds: {requests(ana, book) @ tau, available(book) @ tau}
+  goal: lent(ana, book) @ tau
+  Horn: true
+  Known after close: {requests(ana, book) @ tau, available(book) @ tau, lent(ana, book) @ tau}

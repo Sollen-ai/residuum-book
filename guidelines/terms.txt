@@ -1,0 +1,152 @@
+# terms.txt - one spelling per term for the whole book (Spanish edition).
+# The plain-language jargon check exempts every term listed here.
+#
+# Format: one entry per line, four tab-separated fields:
+#   <spelling in the book> <TAB> <category> <TAB> <English equivalent> <TAB> <evidence>
+# Optional fifth field: `avoid: <spelling>, <spelling>` - variants the build
+#   rejects in prose (see plain-language.yaml).
+# Categories:
+#   code       keyword, type, API or CLI name; written exactly as in the code
+#   concept    Residuum concept; the Spanish word its docs use most
+#   criterion  Part 2 evaluation criterion name (series order)
+#   external   term from the literature or another system
+# Evidence counts are matching lines from
+#   git -C ../residuum grep -c -i -F '<term>' d4d2282 -- docs README.md
+# unless the entry says otherwise. Counts include code blocks.
+# A code entry and a concept entry may share a spelling (default) or pair a
+# keyword with its concept (premises / premisa, effect / efecto).
+# Lines starting with # are comments.
+Known	code	Known	docs: 361 hits; the evidence set of a closure, never translated
+Program	code	Program	docs: 1210 hits ("un Program" 37); type/concept name, plural Programs; keyword `program`; generic "programa" for any Residuum program
+RuleUse	code	RuleUse	docs: 90 hits; plural RuleUses
+seeds	code	seeds	docs: 144 hits vs "semillas" 10; keyword `seeds`, also used as the noun ("un seed")
+premises	code	premises	docs: 39 hits; keyword `premises`; for the concept see "premisa"
+effect	code	effect	keyword in `effect verb` (language-reference.md); for the concept see "efecto"
+default	code	default	keyword `default`; also the concept, see concept entry
+PropositionTime	code	PropositionTime	docs: 530 hits
+after	code	after	time constructor; docs: 2718 hits (includes code)
+Set	code	Set	type constructor `Set T` (language-reference.md)
+none	code	none	empty optional value (language-reference.md)
+I	code	unit	the empty condition (language-reference.md)
+supernormal	code	supernormal	keyword; docs: 10 hits; Spanish plural "supernormales"
+blocked when	code	blocked when	keyword; docs: 8 hits
+fourFusion	code	fourFusion	query keyword; docs: 27 hits
+SearchLimits	code	SearchLimits	docs: 9 hits
+IncrementalClosure	code	IncrementalClosure	docs: 29 hits
+IncrementalProgramClosure	code	IncrementalProgramClosure	language-reference.md (Sólo desde Rust)
+ForwardSession	code	ForwardSession	language-reference.md (Sólo desde Rust)
+DerivativeSession	code	DerivativeSession	language-reference.md (Sólo desde Rust)
+derivedAt	code	derivedAt	docs: 105 hits; the derivation stamp field
+SurfaceAST	code	SurfaceAST	docs: 19 hits
+TypedAST	code	TypedAST	docs: 28 hits
+Formal	code	Formal	docs: 198 hits; the active surface language
+CNL	code	CNL	docs: 46 hits; the paused frontend
+run	code	run	CLI command (language-reference.md)
+query	code	query	CLI command and keyword (language-reference.md)
+explain	code	explain	CLI command (language-reference.md)
+execute	code	execute	CLI command (language-reference.md)
+THEOREM	code	THEOREM	claim class, kept in English as in docs: 110 hits
+MODEL RESULT	code	MODEL RESULT	claim class; docs: 109 hits
+EXPERIMENTAL OBSERVATION	code	EXPERIMENTAL OBSERVATION	claim class; docs: 43 hits
+IMPLEMENTED + TESTED	code	IMPLEMENTED + TESTED	claim class; docs: 21 hits
+NOT IMPLEMENTED	code	NOT IMPLEMENTED	claim class; docs: 18 hits
+cierre	concept	closure	docs: 455 hits vs "closure" 205 (mostly code)
+cierre Horn	concept	Horn closure	docs: 15 hits
+menor cierre	concept	least closure	docs: 8 hits; "cierre mínimo" 0
+requisito residual	concept	residual requirement	docs write bare "requisito(s)" (94 hits) in residual-query context; "requisito residual" 2, "requisito pendiente" 7; book adds "residual" to keep the term distinct from ordinary use
+efecto	concept	effect	docs: 96 hits
+default	concept	default	docs: 346 hits vs "por defecto" 22; plural "defaults"
+modelo mínimo FOUR	concept	FOUR least model	docs: "modelo mínimo" 19 hits; CLI output label "FOUR least model" (7) stays in English
+modelo mínimo	concept	least model	docs: 19 hits
+premisa	concept	premise	docs: 95 hits ("premisas" 60)
+hipótesis	concept	hypothesis	docs: 222 hits; requirements are hypotheses
+evento	concept	event	docs: 423 hits
+verbo	concept	verb	docs: 117 hits
+entidad	concept	entity	docs: 121 hits
+record	concept	record	docs: "record(s)" 137 case-sensitive vs "registro" 27 (used for derivation records)
+regla	concept	rule	docs: 817 hits
+consulta	concept	query	docs: 226 hits
+consulta residual	concept	residual query	docs: 17 hits (+13 plural)
+consulta residual activa	concept	active residual query	docs: "residual activa" 7 hits
+cláusula residual	concept	residual clause	docs: "cláusulas residuales" 4 hits
+objetivo	concept	goal	docs: 156 hits; `goal` in code and output
+experimento	concept	experiment	docs: 188 hits
+sustitución	concept	substitution	docs: 72 hits
+sello	concept	stamp	docs: 64 hits vs "estampa" 1
+binding	concept	binding	docs: 4281 hits (incl. code); "ligadura" 2
+binder	concept	binder	docs: 65 hits
+ámbito	concept	scope	docs: 61 hits; `scope` in code
+matching	concept	matching	docs: 123 hits
+ground	concept	ground	docs: 338 hits
+β-reduction	concept	β-reduction	docs: 34 hits; no Spanish form in the docs
+elaboración	concept	elaboration	docs: 32 hits
+derivación	concept	derivation	docs: 54 hits
+justificación	concept	justification	docs: 290 hits ("justificaci")
+provenance	concept	provenance	docs: 678 hits vs "procedencia" 15
+certificación	concept	certification	docs: 16 hits ("certifica" 199)
+replay	concept	replay	docs: 60 hits vs "reproducción" 14
+residuación	concept	residuation	docs: 13 hits
+abducción	concept	abduction	docs: 11 hits
+abducible	concept	abducible	docs: 54 hits
+monotónico	concept	monotonic	docs: "monotónic" 51 hits vs "monótono" 26
+no monotónico	concept	non-monotonic	follows "monotónico"
+monotonía	concept	monotonicity	docs: 38 hits
+negación evidencial	concept	evidential negation	docs: 7 hits
+pares de evidencia	concept	evidence pairs	docs: 3 hits
+lógica de cuatro valores	concept	four-valued logic	docs: 1 hit (language-reference.md)
+entailment	concept	entailment	docs: 65 hits; no Spanish form in the docs
+fusión	concept	fusion	docs: 56 hits
+contraposición	concept	contraposition	docs: 3 hits
+punto fijo	concept	fixpoint	docs: 17 hits
+semi-naive	concept	semi-naive	docs: 34 hits
+ronda	concept	round	docs: 46 hits
+delta	concept	delta	docs: 131 hits
+pivote	concept	pivot	docs: 34 hits
+índice por argumentos	concept	argument index	docs: 5 hits
+join	concept	join	docs: 118 hits
+aplicación parcial	concept	partial application	docs: 19 hits
+currificación	concept	currying	docs: 4 hits
+lambda	concept	lambda	docs: 90 hits
+excepción	concept	exception	docs: 13 hits
+cierre obligatorio	concept	mandatory closure	docs: 3 hits
+activación	concept	activation	docs: 112 hits
+rechazo	concept	refusal	docs: 16 hits
+fixture	concept	fixture	docs: 253 hits; feminine ("la fixture" 50)
+launcher	concept	launcher	docs: 7 hits; "lanzador" 0
+runner	concept	runner	docs: 124 hits
+oráculo	concept	oracle	docs: 51 hits
+pipeline	concept	pipeline	docs: 7 hits
+frontend	concept	frontend	docs: 10 hits
+tests	concept	tests	docs: 1064 hits vs "pruebas" 64
+timeout	concept	timeout	docs: 121 hits
+jurídico	concept	legal	docs: "jurídic" 198 hits ("legal" mostly in file names)
+Expresividad	criterion	Expressivity	Part 2 criterion 1; s2.1
+Buena definición	criterion	Well-Definedness	Part 2 criterion 2; s2.2
+Tipos y estructuras de datos	criterion	Data Types and Data Structures	Part 2 criterion 3; s2.3
+Modularidad	criterion	Modularity	Part 2 criterion 4; s2.4
+Entrada y salida	criterion	Input and Output Facilities	Part 2 criterion 5; s2.5
+Portabilidad y estandarización	criterion	Portability and Standardization	Part 2 criterion 6; s2.6
+Eficiencia y rendimiento	criterion	Efficiency and Performance	Part 2 criterion 7; s2.7
+Pedagogía y facilidad de aprendizaje	criterion	Pedagogy and Learnability	Part 2 criterion 8; s2.8
+Generalidad	criterion	Generality	Part 2 criterion 9; s2.9
+Capacidad de modelado	criterion	Modeling Ability	Part 2 criterion 10; s2.10
+Legibilidad	criterion	Readability	Part 2 criterion 11; s2.11
+Claridad semántica	criterion	Semantic Clarity	Part 2 criterion 12; s2.12
+FOUR	external	FOUR	Belnap-Dunn four-valued logic; docs: 272 hits
+Horn	external	Horn	docs: 782 hits; "cláusulas de Horn"
+Datalog	external	Datalog	docs: 2 hits
+Prolog	external	Prolog	docs: 1 hit
+Catala	external	Catala	docs: 7 hits
+HAnSKELLsen	external	HAnSKELLsen	series book; not in Residuum docs
+programación con conjuntos de respuestas	external	answer set programming	literature; docs: "conjunto de respuestas" 1
+lógica de defaults	external	default logic	literature; not in docs; follows "default"
+lógica residuada	external	residuated logic	docs: "residuada" 13, "residuado" 14
+lógica lineal	external	linear logic	literature; not in docs
+Peano	external	Peano	docs: 103 hits
+Riggs	external	Riggs	Riggs v. Palmer; docs: 1866 hits (incl. code)
+chumsky	external	chumsky	Rust parser library; docs: 11 hits
+EBNF	external	EBNF	ISO/IEC 14977; not in docs
+Rust	external	Rust	implementation language
+cgroup	external	cgroup	Linux cgroup v2; docs: 169 hits
+CLI	external	CLI	command-line interface
+CI	external	CI	continuous integration

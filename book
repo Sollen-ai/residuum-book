@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+"""Build tool for The Residuum Programming Language. See build/README.md."""
+import os
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+VENV_PYTHON = ROOT / ".venv" / "bin" / "python"
+PDF_FLAGS = {"--pdf", "--booklet", "--all"}
+
+
+def needs_venv(argv):
+    return bool(argv) and argv[0] == "build" and any(arg in PDF_FLAGS for arg in argv[1:])
+
+
+def in_venv():
+    return Path(sys.prefix).resolve() == (ROOT / ".venv").resolve()
+
+
+if needs_venv(sys.argv[1:]) and not in_venv():
+    if not VENV_PYTHON.exists():
+        print("error: el PDF y el folleto necesitan el entorno virtual .venv/, que no existe. Créalo con\n"
+              "  python3 -m venv .venv && .venv/bin/pip install -r build/requirements.txt\n"
+              "El build HTML (./book build [--draft] [--txt]) no lo necesita.", file=sys.stderr)
+        sys.exit(1)
+    os.execv(str(VENV_PYTHON), [str(VENV_PYTHON), str(Path(__file__).resolve()), *sys.argv[1:]])
+
+sys.path.insert(0, str(ROOT / "build"))
+from rbook.cli import main  # noqa: E402
+
+sys.exit(main())

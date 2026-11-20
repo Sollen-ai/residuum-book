@@ -1,0 +1,16 @@
+experiment both
+  goal: result() @ tau
+  round 1
+    T(X): {shared() @ tau, ready() @ tau}
+    delta: {shared() @ tau, ready() @ tau}
+    Known: {A() @ tau, B() @ tau, shared() @ tau, ready() @ tau}
+  round 2
+    T(X): {shared() @ tau, result() @ tau, ready() @ tau}
+    delta: {result() @ tau}
+    Known: {A() @ tau, B() @ tau, shared() @ tau, ready() @ tau, result() @ tau}
+  round 3
+    T(X): {shared() @ tau, result() @ tau, ready() @ tau}
+    delta: {}
+    Known: {A() @ tau, B() @ tau, shared() @ tau, ready() @ tau, result() @ tau}
+  goal supported so far: true
+  status: complete

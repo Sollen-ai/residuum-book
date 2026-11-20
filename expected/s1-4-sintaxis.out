@@ -1,0 +1,1 @@
+residuum: s1-4-sintaxis.res: formal parse error: Simple { span: 107..108, reason: Unexpected, expected: {Some(At), Some(RBrace)}, found: Some(Ident("tau")), label: Multi }

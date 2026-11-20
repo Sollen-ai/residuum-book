@@ -1,0 +1,22 @@
+experiment plain
+  goal: recorded(juan, oldDate) @ after(tau)
+  #1 recorded(juan, oldDate) @ after(tau)
+    verb origin: Registro (s5-2-registro.res)
+    rule remember | derivedAt d1
+      rule origin: Registro (s5-2-registro.res)
+      substitution: {effective=oldDate, subject=juan, t=tau}
+      antecedents: #2
+  #2 observed(juan, oldDate) @ tau
+    verb origin: Registro (s5-2-registro.res)
+    seed
+experiment nested
+  goal: recorded(juan, after(oldDate)) @ after(tau)
+  #1 recorded(juan, after(oldDate)) @ after(tau)
+    verb origin: Registro (s5-2-registro.res)
+    rule remember | derivedAt d1
+      rule origin: Registro (s5-2-registro.res)
+      substitution: {effective=after(oldDate), subject=juan, t=tau}
+      antecedents: #2
+  #2 observed(juan, after(oldDate)) @ tau
+    verb origin: Registro (s5-2-registro.res)
+    seed

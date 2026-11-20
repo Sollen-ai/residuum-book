@@ -1,0 +1,20 @@
+experiment sale
+  Seeds: {sells(juan, car, pedro) @ tau}
+  goal: give(juan, car, pedro) @ after(tau)
+  Horn: true
+  Known after close: {sells(juan, car, pedro) @ tau, give(juan, car, pedro) @ after(tau)}
+  execution:
+    state @ tau: juan.assets = {car}, pedro.assets = {}
+    apply tau -> after(tau): give(juan, car, pedro) @ after(tau)
+    state @ after(tau): juan.assets = {}, pedro.assets = {car}
+experiment resale
+  Seeds: {sells(juan, car, pedro) @ tau, sells(pedro, car, charlie) @ after(tau)}
+  goal: give(juan, car, pedro) @ after(tau)
+  Horn: true
+  Known after close: {sells(juan, car, pedro) @ tau, sells(pedro, car, charlie) @ after(tau), give(juan, car, pedro) @ after(tau), give(pedro, car, charlie) @ after(after(tau))}
+  execution:
+    state @ tau: charlie.assets = {}, juan.assets = {car}, pedro.assets = {}
+    apply tau -> after(tau): give(juan, car, pedro) @ after(tau)
+    state @ after(tau): charlie.assets = {}, juan.assets = {}, pedro.assets = {car}
+    apply after(tau) -> after(after(tau)): give(pedro, car, charlie) @ after(after(tau))
+    state @ after(after(tau)): charlie.assets = {car}, juan.assets = {}, pedro.assets = {}

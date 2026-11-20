@@ -1,0 +1,1 @@
+residuum: s6-13-sintaxis.res: formal parse error: Simple { span: 130..131, reason: Unexpected, expected: {Some(Comma), Some(RBrace)}, found: Some(Ident("pays")), label: None }

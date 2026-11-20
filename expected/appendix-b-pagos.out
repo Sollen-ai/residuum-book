@@ -1,0 +1,15 @@
+experiment retentionNegativePayment
+  Seeds: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, paymentFor(saleCase, pricePayment) @ tau, ~Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau}
+  goal: obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+  Horn: false
+  Known after close: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, paymentFor(saleCase, pricePayment) @ tau, ~Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau, permission(saleTransferPermission, juan, transfer, car, pedro, private, oldDate) @ tau}
+experiment retentionPaidAndNegative
+  Seeds: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, paymentFor(saleCase, pricePayment) @ tau, Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau, ~Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau}
+  goal: obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+  Horn: true
+  Known after close: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, paymentFor(saleCase, pricePayment) @ tau, Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau, ~Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau, permission(saleTransferPermission, juan, transfer, car, pedro, private, oldDate) @ tau, obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau, inconsistent(pricePayment, pedro, pay, price, juan, private, newDate) @ tau, do(juan, transfer, car, pedro) @ after(tau)}
+experiment retentionWrongPayment
+  Seeds: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, paymentFor(saleCase, pricePayment) @ tau, Act(pricePayment, pedro, pay, price, pedro, private, newDate) @ tau}
+  goal: obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+  Horn: false
+  Known after close: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, paymentFor(saleCase, pricePayment) @ tau, Act(pricePayment, pedro, pay, price, pedro, private, newDate) @ tau, permission(saleTransferPermission, juan, transfer, car, pedro, private, oldDate) @ tau}

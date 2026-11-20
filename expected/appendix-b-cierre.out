@@ -1,0 +1,15 @@
+experiment plainWithoutPayment
+  Seeds: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Plain) @ tau}
+  goal: obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+  Horn: true
+  Known after close: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Plain) @ tau, permission(saleTransferPermission, juan, transfer, car, pedro, private, oldDate) @ tau, obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau, do(juan, transfer, car, pedro) @ after(tau)}
+experiment retentionWithoutPayment
+  Seeds: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau}
+  goal: obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+  Horn: false
+  Known after close: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, permission(saleTransferPermission, juan, transfer, car, pedro, private, oldDate) @ tau}
+experiment retentionPaid
+  Seeds: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, paymentFor(saleCase, pricePayment) @ tau, Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau}
+  goal: obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+  Horn: true
+  Known after close: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau, paymentFor(saleCase, pricePayment) @ tau, Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau, permission(saleTransferPermission, juan, transfer, car, pedro, private, oldDate) @ tau, obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau, do(juan, transfer, car, pedro) @ after(tau)}

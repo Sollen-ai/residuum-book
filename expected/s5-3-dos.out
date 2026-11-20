@@ -1,0 +1,18 @@
+experiment complete
+  Seeds: {member(ana) @ tau, requests(ana, libro) @ tau, available(libro) @ tau}
+  goal: lent(ana, libro) @ after(tau)
+  Horn: true
+  Known after close: {member(ana) @ tau, requests(ana, libro) @ tau, available(libro) @ tau, eligible(ana) @ tau, lent(ana, libro) @ after(tau)}
+  requirement: I
+experiment partial
+  Seeds: {member(ana) @ tau, requests(ana, libro) @ tau}
+  goal: lent(ana, libro) @ after(tau)
+  Horn: false
+  Known after close: {member(ana) @ tau, requests(ana, libro) @ tau, eligible(ana) @ tau}
+  requirement: available(libro) @ tau
+experiment empty
+  Seeds: {}
+  goal: lent(ana, libro) @ after(tau)
+  Horn: false
+  Known after close: {}
+  requirement: ((member(ana) @ tau ⊗ requests(ana, libro) @ tau) ⊗ available(libro) @ tau)

@@ -1,0 +1,9 @@
+experiment notOwner
+  Premises: {~owns(pedro, car, transferAct, private, newDate) @ tau}
+  goal: ~transferred(transferAct, juan, car, pedro, private, newDate) @ tau
+  Horn: false
+  search scope: rules {transferTitle}
+  query bindings: {rule transferTitle.act = transferAct, rule transferTitle.subject = juan, rule transferTitle.object = car, rule transferTitle.recipient = pedro, rule transferTitle.authority = private, rule transferTitle.effective = newDate, rule transferTitle.t = tau}
+  Known after close: {~owns(pedro, car, transferAct, private, newDate) @ tau}
+  FOUR fusion: true (3 models / 16 interpretations)
+  FOUR least model: true (goal T; 2 atoms, 3 clauses; explicit scope)

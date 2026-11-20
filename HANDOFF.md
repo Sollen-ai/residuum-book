@@ -24,10 +24,12 @@ The owner's requirements, in their words where possible:
 
 | File | Status |
 |---|---|
-| `spine.yaml` | Done: 9 parts, 69 sections plus back matter, about 59,000 words. Checked: parses, unique ids, every owner resolves, every evidence path exists in the Residuum repo |
-| `AGENTS.md` | Done: standing rules for agents |
-| `HANDOFF.md` | This file |
-| Build tool, guidelines, CI | Not started (plan below) |
+| `spine.yaml` | Done and translated to Spanish: 9 parts, 69 sections plus back matter, about 59,300 words. Checked: parses with no split items, unique ids, every owner resolves, every evidence entry resolves at `d4d2282`. Keys, ids, evidence, `rules:` and comments stay English |
+| `AGENTS.md` | Done: standing rules for agents (English) |
+| `guidelines/` | Done: `lineamientos_lenguaje_llano.txt` (verbatim), `plain-language.yaml` (machine rules, series thresholds), `terms.txt` (150 lines: one spelling per term), `criteria-template.md` (Part 2 shape) |
+| `build/`, `./book` | Phases 1-5 done: build, listing runner (`steps=`/`trace=` options, cross-process lock), checks, `out/report.md`, HTML/PDF/booklet/txt (PDF tools in `.venv/`, `build/requirements.txt`), local pre-commit hook. 101 tests |
+| `sections/`, `setup/`, `bib/`, `expected/` | First full draft on 2026-11-19: all 69 sections plus Appendix B, 104 listings, fact-checked against `d4d2282` by independent reviewers. Final build passes (383 A5 pages). Section `status` in the spine is still unset: the owner reviews and sets it |
+| Pre-commit check | Done: `build/hooks/pre-commit`, enabled with `git config core.hooksPath build/hooks` (replaces GitHub CI; see Plan, phase 5) |
 
 ## Decisions taken, and why
 
@@ -71,19 +73,79 @@ Sources studied:
 No Haskell or Catala chapter prose exists on this machine, only TOCs and
 plans.
 
+## Decisions settled on 2026-11-19
+
+1. **Book language: Spanish.** Readability is Fernández-Huerta. Agent
+   documents stay English.
+2. **Pinned commit: `d4d2282`** (`book.pinned_commit`).
+3. **Terms:** code names exactly as in the code (`Known`, `seeds`,
+   `premises`, `Program`, `RuleUse`, `default`); concepts in the Spanish the
+   Residuum docs use most (cierre, regla, evento, consulta, sello, premisa,
+   efecto). Fixed in `guidelines/terms.txt`.
+4. **Criterion names:** Expresividad, Buena definición, Tipos y estructuras de
+   datos, Modularidad, Entrada y salida, Portabilidad y estandarización,
+   Eficiencia y rendimiento, Pedagogía y facilidad de aprendizaje,
+   Generalidad, Capacidad de modelado, Legibilidad, Claridad semántica.
+   Verdict sentence: "Según este criterio, Residuum ...".
+5. **Source format:** Markdown sections plus a Python build (no pandoc on this
+   machine; `markdown_it` + `jinja2`).
+6. **Evidence kinds** beyond repo paths: `git:log`, `git:tag`, `series:`,
+   `sec:`, `listing:self` (spine header comment).
+
+## External review (2026-11-19)
+
+A reviewer read the first draft. Acted on: preface with the central
+contribution (`front_matter: preface`), guided tour `s1.7` before the
+criteria, parser determinism vs grammar unambiguity (s3.5, s9.1), table
+layout, institutional authors in citations, PDF outline and tags, authors
+(`book.authors`), booklet title. Not acted on: removing Appendix A
+repetition (Appendix A is an owner requirement). The reviewer read the
+booklet as the reading edition; send `out/residuum.pdf` to reviewers.
+
+## What the book needs from the Residuum repo
+
+The book never edits Residuum; these are requests to its owner.
+
+1. **Universality experiment (asked for on 2026-11-19).** s2.9 now says the
+   core computes recursively (Peano arithmetic, polynomial sum and product)
+   but that nobody has shown or ruled out that it is universal. Horn clauses
+   with a successor constructor are Turing-complete in general
+   (Tärnlund 1977); Residuum has `after`, recursion and decrementing matches.
+   A fixture plus test in the style of the Peano experiments that simulates a
+   two-counter (Minsky) machine, with a doc classifying the result, would let
+   the book state universality as a tested result. When it lands, re-pin
+   `book.pinned_commit`, add the doc to s2.9's evidence, and revise s2.9's
+   verdict and s8.1's table row together.
+2. **A machine-readable way to tell a rejected program from a refused run**
+   in the launcher's output (the build parses `test_safe.py`'s diagnostics).
+3. **A printable SurfaceAST/TypedAST** (s6.13 cannot show those stages).
+
 ## Open decisions (owner)
 
-1. **Book language:** English (provisional) or Spanish. This decides the
-   readability formula (Flesch–Kincaid or Fernández-Huerta) and the
-   guidelines file.
-2. **Pinned Residuum commit.** Suggested: `d4d2282` (main, language reference
-   included). Set `book.pinned_commit` in `spine.yaml`.
-3. **Where the repo lives:** local only for now, or `Sollen-ai/residuum-book`.
-4. **Source format.** Recommended: Markdown sections plus a small Python build,
-   matching `~/hanskellsen_docs` (Python, booklet tools). Alternative: Typst,
-   for better PDF and numbering.
-5. **Word budget.** About 59,000 words is three times the HAnSKELLsen book. The
+0. **Book review.** Read the draft (`out/residuum.pdf`) and set each
+   section's `status`. Known gaps the writers reported:
+   - No preface: the plan's "audience and scope" preface has no spine entry.
+   - s3.2's EBNF is hand-written from `src/formal.rs`, not machine-checked;
+     Residuum has no grammar file.
+   - s6.13 cannot show SurfaceAST/TypedAST: no CLI command prints them.
+   - Briefs the evidence contradicts or that need updating: s2.6 and s2.7
+     have `listings: []` but the Part 2 template needs listings; s5.2/s5.7
+     want `explain`, not `run`; s6.6, s7.8, s4.10 cite files outside their
+     evidence lists; s6.8, s6.13, s7.7 have one-item `covers` joined by
+     semicolons.
+   - Residuum docs found outdated by the code (E6 in the monotonic spec on
+     incremental Programs; the explicit-query-substitutions doc's
+     "pendiente"): the book follows the code and says so.
+
+1. **Where the repo lives:** local only for now, or `Sollen-ai/residuum-book`.
+   Nothing in the build depends on it.
+2. **Word budget.** About 59,300 words is three times the HAnSKELLsen book. The
    owner may trim `words` per section.
+3. **Translator's judgement calls** to confirm (see `guidelines/terms.txt`):
+   "requisito residual" (docs mostly say bare "requisito"); English terms kept
+   in Spanish prose because the docs have no Spanish form (β-reduction,
+   entailment, binding, provenance, launcher); "lógica de defaults";
+   "significado de bajo nivel" for lowered meaning.
 
 ## Design
 
@@ -156,7 +218,10 @@ Build stages, all driven by `spine.yaml`:
 - Snippets executed under Residuum's resource limits.
 - Diagrams as text (Graphviz/Mermaid) rendered at build time, with alt text
   required.
-- CI: build on every push, fail on any check, upload `out/` as an artifact.
+- A local pre-commit check: the tests, the spine check and a draft build
+  (which re-runs changed listings through the launcher) must pass before a
+  commit. No remote CI: listings run only through Residuum's launcher, which
+  needs this machine's systemd session; GitHub runners lack it.
 
 ## Plan
 
@@ -169,10 +234,20 @@ Each phase ends with its acceptance check passing.
 | 2 | Listing runner: launcher at the pinned commit, `expect-error`, `include`, hidden setup, cache, `expected/` diffs | A changed output fails the build with a diff |
 | 3 | Checks: structure, `covers` anchors, verdicts, word budget, plain language, terms, citations, placeholders | Each check has a failing and a passing fixture |
 | 4 | Render PDF and booklet; colophon; report | The booklet prints from the sample |
-| 5 | CI | A pull request with a broken listing fails |
+| 5 | Local pre-commit check (no remote CI) | A commit with a broken listing is refused |
 | 6 | Writing: one pilot section first (suggested `s6.8`, residuation, the hardest and most central), reviewed against its brief; then the rest in parallel, one section per branch | The pilot passes the build and the owner's review |
 
 ## Notes for whoever continues
+
+- **Build state:** phases 0-3 accepted on 2026-11-19 (`python3 -m pytest
+  build/tests`; `./book build --draft`). Hidden setups live in
+  `setup/<name>.res` (`setup=<name>` on a fence). The pinned commit is run from
+  a read-only `git archive` export in `.cache/residuum-<commit>/`, never a
+  worktree; a cold compile there took 16 s at 637 MiB, inside the runner's
+  limits.
+- **Spine flow lists:** an unquoted comma inside `[a, b]` splits an item.
+  `./book check-spine` catches unbalanced parentheses and null keys, not every
+  split; quote any item that contains a comma.
 
 - **Residuum's own rules apply** when running its code: launcher or bounded
   runner only, no direct `cargo test`, limits unchanged.

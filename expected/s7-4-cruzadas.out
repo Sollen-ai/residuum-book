@@ -1,0 +1,10 @@
+experiment crossed
+  Seeds: {sells(juan, car, pedro) @ tau, sells(pedro, car, juan) @ tau}
+  goal: give(juan, car, pedro) @ after(tau)
+  Horn: true
+  Known after close: {sells(juan, car, pedro) @ tau, sells(pedro, car, juan) @ tau, give(juan, car, pedro) @ after(tau), give(pedro, car, juan) @ after(tau)}
+  execution:
+    state @ tau: juan.assets = {car}, pedro.assets = {car}
+    conflict @ tau: give(juan, car, pedro) @ after(tau) and give(pedro, car, juan) @ after(tau) remove and add car on juan.assets
+    conflict @ tau: give(juan, car, pedro) @ after(tau) and give(pedro, car, juan) @ after(tau) add and remove car on pedro.assets
+    execution stopped

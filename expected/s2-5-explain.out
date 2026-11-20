@@ -1,0 +1,21 @@
+experiment twoProofs
+  goal: owns(bob, car) @ after(tau)
+  #1 owns(bob, car) @ after(tau)
+    verb origin: Propiedad (s2-5-explain.res)
+    rule sale | derivedAt d1
+      rule origin: Propiedad (s2-5-explain.res)
+      substitution: {buyer=bob, object=car, seller=ana, t=tau}
+      antecedents: #2
+    rule gift | derivedAt d2
+      rule origin: Propiedad (s2-5-explain.res)
+      substitution: {donee=bob, donor=ana, object=car, t=tau}
+      antecedents: #3
+  #2 sells(ana, car, bob) @ tau
+    verb origin: Propiedad (s2-5-explain.res)
+    seed
+  #3 donates(ana, car, bob) @ tau
+    verb origin: Propiedad (s2-5-explain.res)
+    seed
+experiment noProof
+  goal: owns(bob, car) @ after(tau)
+  not derived from these seeds

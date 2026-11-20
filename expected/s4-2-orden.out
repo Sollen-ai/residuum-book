@@ -1,0 +1,5 @@
+experiment twoOrders
+  Seeds: {booked(Slot {...}) @ tau}
+  goal: confirmed(Slot {...}) @ tau
+  Horn: true
+  Known after close: {booked(Slot {...}) @ tau, confirmed(Slot {...}) @ tau}

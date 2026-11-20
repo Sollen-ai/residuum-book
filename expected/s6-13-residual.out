@@ -1,0 +1,12 @@
+experiment nothing
+  Seeds: {}
+  goal: owes(ana, car, bob) @ after(tau)
+  Horn: false
+  Known after close: {}
+  requirement: (agrees(ana, car, bob) @ tau ⊗ pays(bob, car, ana) @ tau)
+experiment paidOnly
+  Seeds: {pays(bob, car, ana) @ tau}
+  goal: owes(ana, car, bob) @ after(tau)
+  Horn: false
+  Known after close: {pays(bob, car, ana) @ tau}
+  requirement: agrees(ana, car, bob) @ tau

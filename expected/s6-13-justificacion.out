@@ -1,0 +1,14 @@
+experiment complete
+  goal: owes(ana, car, bob) @ after(tau)
+  #1 owes(ana, car, bob) @ after(tau)
+    verb origin: Deuda (s6-13-justificacion.res)
+    rule sale | derivedAt d1
+      rule origin: Deuda (s6-13-justificacion.res)
+      substitution: {buyer=bob, object=car, seller=ana, t=tau}
+      antecedents: #2, #3
+  #2 agrees(ana, car, bob) @ tau
+    verb origin: Deuda (s6-13-justificacion.res)
+    seed
+  #3 pays(bob, car, ana) @ tau
+    verb origin: Deuda (s6-13-justificacion.res)
+    seed

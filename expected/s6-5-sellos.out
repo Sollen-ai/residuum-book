@@ -1,0 +1,30 @@
+experiment both
+  goal: result() @ tau
+  #1 result() @ tau
+    verb origin: Sellos (s6-5-sellos.res)
+    rule consequence | derivedAt d4
+      rule origin: Sellos (s6-5-sellos.res)
+      substitution: {t=tau}
+      antecedents: #2, #3
+  #2 shared() @ tau
+    verb origin: Sellos (s6-5-sellos.res)
+    rule fromA | derivedAt d1
+      rule origin: Sellos (s6-5-sellos.res)
+      substitution: {t=tau}
+      antecedents: #4
+    rule fromB | derivedAt d2
+      rule origin: Sellos (s6-5-sellos.res)
+      substitution: {t=tau}
+      antecedents: #5
+  #3 ready() @ tau
+    verb origin: Sellos (s6-5-sellos.res)
+    rule axiom | derivedAt d3
+      rule origin: Sellos (s6-5-sellos.res)
+      substitution: {}
+      antecedents: I
+  #4 A() @ tau
+    verb origin: Sellos (s6-5-sellos.res)
+    seed
+  #5 B() @ tau
+    verb origin: Sellos (s6-5-sellos.res)
+    seed

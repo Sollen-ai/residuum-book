@@ -1,0 +1,18 @@
+experiment empty
+  Seeds: {}
+  goal: give(alice, car, bob) @ after(tau)
+  Horn: false
+  Known after close: {}
+  requirement: ((agreesPrice(alice, car, bob) @ tau ⊗ agreesObject(bob, car, alice) @ tau) ∨ donates(alice, car, bob) @ tau)
+experiment priceOnly
+  Seeds: {agreesPrice(alice, car, bob) @ tau}
+  goal: give(alice, car, bob) @ after(tau)
+  Horn: false
+  Known after close: {agreesPrice(alice, car, bob) @ tau}
+  requirement: (agreesObject(bob, car, alice) @ tau ∨ donates(alice, car, bob) @ tau)
+experiment both
+  Seeds: {agreesPrice(alice, car, bob) @ tau, agreesObject(bob, car, alice) @ tau}
+  goal: give(alice, car, bob) @ after(tau)
+  Horn: true
+  Known after close: {agreesPrice(alice, car, bob) @ tau, agreesObject(bob, car, alice) @ tau, give(alice, car, bob) @ after(tau)}
+  requirement: (I ∨ donates(alice, car, bob) @ tau)

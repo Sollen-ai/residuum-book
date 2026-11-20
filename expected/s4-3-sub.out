@@ -1,0 +1,5 @@
+experiment buyerPays
+  Seeds: {pays(ana, car) @ tau}
+  goal: paid(ana, car) @ tau
+  Horn: true
+  Known after close: {pays(ana, car) @ tau, paid(ana, car) @ tau}

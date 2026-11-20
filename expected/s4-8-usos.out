@@ -1,0 +1,16 @@
+experiment twoUses
+  Premises: {notified(ana) @ tau, notified(bob) @ tau}
+  goal: linked(ana, bob) @ tau
+  Horn: true
+  search scope: program Both
+  query bindings: {program Both.a = ana, program Both.b = bob, program Both.t = tau}
+  Known after close: {notified(ana) @ tau, notified(bob) @ tau, served(ana) @ tau, served(bob) @ tau, linked(ana, bob) @ tau}
+  FOUR least model: true (goal T; 5 atoms, 9 clauses; explicit scope)
+experiment oneRule
+  Premises: {notified(ana) @ tau, notified(bob) @ tau}
+  goal: linked(ana, bob) @ tau
+  Horn: false
+  search scope: rules {service, link}
+  query bindings: {rule service.person = ana, rule service.t = tau, rule link.a = ana, rule link.b = bob, rule link.t = tau}
+  Known after close: {notified(ana) @ tau, notified(bob) @ tau, served(ana) @ tau}
+  FOUR least model: false (goal N; 5 atoms, 7 clauses; explicit scope)

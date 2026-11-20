@@ -1,0 +1,15 @@
+experiment withBook
+  Seeds: {requests(ana, book) @ tau, available(book) @ tau}
+  goal: lent(ana, book) @ tau
+  Horn: true
+  Known after close: {requests(ana, book) @ tau, available(book) @ tau, lent(ana, book) @ tau, eligible(ana, book) @ after(tau), visible(book) @ tau}
+experiment withoutBook
+  Seeds: {requests(ana, book) @ tau, ~available(book) @ tau}
+  goal: refused(ana, book) @ tau
+  Horn: true
+  Known after close: {requests(ana, book) @ tau, ~available(book) @ tau, refused(ana, book) @ tau, visible(book) @ tau}
+experiment noEvidence
+  Seeds: {requests(ana, book) @ tau}
+  goal: refused(ana, book) @ tau
+  Horn: false
+  Known after close: {requests(ana, book) @ tau, visible(book) @ tau}

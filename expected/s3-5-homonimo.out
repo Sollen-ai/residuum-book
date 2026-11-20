@@ -1,0 +1,8 @@
+experiment homonym
+  Seeds: {requests(ana, book) @ tau}
+  goal: lent(ana, book) @ after(tau)
+  Horn: false
+  search scope: rules {lending}
+  query bindings: {rule lending.lender = lender}
+  Known after close: {requests(ana, book) @ tau}
+  requirement: owns(lender, book) @ tau

@@ -1,0 +1,27 @@
+experiment bothReciprocities
+  goal: obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+  #1 obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+    verb origin: LegalMonotonicCase (appendix-b-justificacion.res)
+    rule plainTransferObligation | derivedAt d3
+      rule origin: LegalMonotonicCase (appendix-b-justificacion.res)
+      substitution: {authority=private, buyer=pedro, duty=saleTransferDuty, effective=oldDate, object=car, permit=saleTransferPermission, priceObject=price, saleId=saleCase, seller=juan, t=tau}
+      antecedents: #2, #3
+    rule paidRetentionObligation | derivedAt d4
+      rule origin: LegalMonotonicCase (appendix-b-justificacion.res)
+      substitution: {authority=private, buyer=pedro, duty=saleTransferDuty, effective=oldDate, object=car, payment=pricePayment, paymentAuthority=private, paymentEffective=newDate, permit=saleTransferPermission, priceObject=price, saleId=saleCase, seller=juan, t=tau}
+      antecedents: #2, #4, #5, #6
+  #2 sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau
+    verb origin: LegalMonotonicCase (appendix-b-justificacion.res)
+    seed
+  #3 reciprocity(saleCase, Plain) @ tau
+    verb origin: LegalMonotonicCase (appendix-b-justificacion.res)
+    seed
+  #4 reciprocity(saleCase, Retention) @ tau
+    verb origin: LegalMonotonicCase (appendix-b-justificacion.res)
+    seed
+  #5 paymentFor(saleCase, pricePayment) @ tau
+    verb origin: LegalMonotonicCase (appendix-b-justificacion.res)
+    seed
+  #6 Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau
+    verb origin: LegalMonotonicCase (appendix-b-justificacion.res)
+    seed

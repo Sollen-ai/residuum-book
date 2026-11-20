@@ -1,0 +1,32 @@
+experiment nothing
+  Seeds: {}
+  goal: shipped(ana, libro) @ after(tau)
+  Active closure: false
+  Known after close: {}
+  active requirement: (orders(ana, libro) @ tau ⊗ (paid(ana, libro) @ tau ⊗ inStock(libro) @ tau))
+  certified explanations: 1
+    explanation 1: guard orders(ana, libro) @ tau | producer Order::0::ship
+experiment ordered
+  Seeds: {orders(ana, libro) @ tau, paid(ana, libro) @ tau}
+  goal: shipped(ana, libro) @ after(tau)
+  Active closure: false
+  Known after close: {orders(ana, libro) @ tau, paid(ana, libro) @ tau, invoiced(ana, libro) @ tau}
+  active requirement: inStock(libro) @ tau
+  certified explanations: 1
+    explanation 1: guard orders(ana, libro) @ tau | producer Order::0::ship
+experiment complete
+  Seeds: {orders(ana, libro) @ tau, paid(ana, libro) @ tau, inStock(libro) @ tau}
+  goal: shipped(ana, libro) @ after(tau)
+  Active closure: true
+  Known after close: {orders(ana, libro) @ tau, paid(ana, libro) @ tau, inStock(libro) @ tau, shipped(ana, libro) @ after(tau), invoiced(ana, libro) @ tau}
+  active requirement: I
+  certified explanations: 1
+    explanation 1: guard orders(ana, libro) @ tau | producer Order::0::ship
+experiment invoiceOnly
+  Seeds: {}
+  goal: invoiced(ana, libro) @ tau
+  Active closure: false
+  Known after close: {}
+  active requirement: orders(ana, libro) @ tau
+  certified explanations: 1
+    explanation 1: guard orders(ana, libro) @ tau | producer Order::1::invoice

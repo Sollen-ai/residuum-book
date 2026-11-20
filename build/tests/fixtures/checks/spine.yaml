@@ -1,0 +1,32 @@
+# Fixture spine for the phase 3 checks: one ordinary section, one Part 2
+# section (verdict: required, with subsections), Sources and Appendix A.
+book:
+  title: Libro de comprobaciones
+  language: es
+  pinned_commit: abc1234
+owners:
+  reglas: s-uno
+  criterio: s-dos
+parts:
+  - id: p1
+    title: Primera parte
+    sections:
+      - id: s-uno
+        title: Las reglas de Residuum
+        covers: [Qué es una regla., Cómo se deriva un hecho.]
+        words: 70
+  - id: p2
+    title: Criterios
+    sections:
+      - id: s-dos
+        title: Expresividad
+        covers: [El criterio en Residuum.]
+        subsections:
+          - {title: Detalle, covers: [Primer detalle., Segundo detalle.]}
+        verdict: required
+        words: 80
+back_matter:
+  - id: sources
+    title: Fuentes
+  - id: appendix-a
+    title: "Appendix A: Listings Explained"

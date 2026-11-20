@@ -1,0 +1,1 @@
+residuum: s3-2-anidado.res: formal parse error: Simple { span: 31..32, reason: Unexpected, expected: {Some(Comma), Some(RBrace)}, found: Some(LParen), label: None }

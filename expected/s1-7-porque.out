@@ -1,0 +1,14 @@
+experiment complete
+  goal: handsKeys(omar, attic, lena) @ after(tau)
+  #1 handsKeys(omar, attic, lena) @ after(tau)
+    verb origin: Alquiler (s1-7-porque.res)
+    rule keys | derivedAt d1
+      rule origin: Alquiler (s1-7-porque.res)
+      substitution: {flat=attic, landlord=omar, t=tau, tenant=lena}
+      antecedents: #2, #3
+  #2 signs(lena, attic, omar) @ tau
+    verb origin: Alquiler (s1-7-porque.res)
+    seed
+  #3 paysDeposit(lena, attic, omar) @ tau
+    verb origin: Alquiler (s1-7-porque.res)
+    seed

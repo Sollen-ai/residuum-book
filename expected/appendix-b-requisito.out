@@ -1,0 +1,8 @@
+experiment retentionWithoutPayment
+  Seeds: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau}
+  goal: obligation(saleTransferDuty, juan, transfer, car, pedro, private, oldDate) @ tau
+  Horn: false
+  search scope: rules {plainTransferObligation, paidRetentionObligation}
+  query bindings: {rule plainTransferObligation.saleId = saleCase, rule plainTransferObligation.priceObject = price, rule plainTransferObligation.permit = saleTransferPermission, rule paidRetentionObligation.saleId = saleCase, rule paidRetentionObligation.priceObject = price, rule paidRetentionObligation.permit = saleTransferPermission, rule paidRetentionObligation.payment = pricePayment, rule paidRetentionObligation.paymentAuthority = private, rule paidRetentionObligation.paymentEffective = newDate}
+  Known after close: {sale(saleCase, juan, car, pedro, price, saleTransferDuty, saleTransferPermission, private, oldDate) @ tau, reciprocity(saleCase, Retention) @ tau}
+  requirement: (reciprocity(saleCase, Plain) @ tau ∨ (paymentFor(saleCase, pricePayment) @ tau ⊗ Act(pricePayment, pedro, pay, price, juan, private, newDate) @ tau))

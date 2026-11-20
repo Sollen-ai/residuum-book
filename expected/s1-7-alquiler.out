@@ -1,0 +1,10 @@
+experiment complete
+  Seeds: {signs(lena, attic, omar) @ tau, paysDeposit(lena, attic, omar) @ tau}
+  goal: handsKeys(omar, attic, lena) @ after(tau)
+  Horn: true
+  Known after close: {signs(lena, attic, omar) @ tau, paysDeposit(lena, attic, omar) @ tau, handsKeys(omar, attic, lena) @ after(tau)}
+experiment signedOnly
+  Seeds: {signs(lena, attic, omar) @ tau}
+  goal: handsKeys(omar, attic, lena) @ after(tau)
+  Horn: false
+  Known after close: {signs(lena, attic, omar) @ tau}

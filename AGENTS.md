@@ -6,10 +6,17 @@ this file, then `HANDOFF.md`, then the entry for your section in
 
 ## Sources of truth
 
+- **The book is in Spanish.** Section prose, captions, explanations and
+  spine titles and briefs are Spanish; agent documents (`AGENTS.md`,
+  `HANDOFF.md`, the spine's `rules:` and comments, `guidelines/` notes) stay
+  in English. Code names stay exactly as in the code; concepts use the
+  spelling in `guidelines/terms.txt`.
 - **`spine.yaml` decides scope.** It is the table of contents and the writing
   brief: for each section it gives `purpose`, `covers`, `excludes`,
   `evidence`, `listings` and `words`, and the `owners` map gives every concept
-  exactly one owning section. Do not change it to fit what you wrote; propose
+  exactly one owning section. The spine's header comment lists the evidence
+  kinds (repo paths, anchors, line ranges, `git:`, `series:`, `sec:`,
+  `listing:self`). Do not change it to fit what you wrote; propose
   the change to the owner instead.
 - **The Residuum repository at `book.pinned_commit` decides facts.** Evidence
   paths in the spine are relative to that repository
@@ -30,13 +37,15 @@ this file, then `HANDOFF.md`, then the entry for your section in
    message or behaviour the pinned commit does not have. If the evidence is
    not enough, stop and say what is missing; do not fill the gap.
 4. Use the repo's claim classes where its docs do: THEOREM, MODEL RESULT,
-   EXPERIMENTAL OBSERVATION, IMPLEMENTED + TESTED, NOT IMPLEMENTED.
+   EXPERIMENTAL OBSERVATION, IMPLEMENTED + TESTED, IMPLEMENTED + LIMITED,
+   NOT IMPLEMENTED.
 5. State limitations plainly. Promise no future work beyond what a Residuum
    doc marks as pending.
 6. Part 2 sections follow the series pattern: generic definition of the
    criterion, what it means for Residuum, numbered listings with at least one
-   contrast language, and a closing verdict sentence ("Under this criterion,
-   Residuum performs ...").
+   contrast language, and a closing verdict sentence ("Según este criterio,
+   Residuum ...", the Spanish form of "Under this criterion, Residuum
+   performs ..."). See `guidelines/criteria-template.md`.
 7. Define each term once, in its owner section. Use the series' criterion
    names and Residuum's own terms (Known, closure, residual requirement,
    seeds, premises, Program, RuleUse, default, effect, FOUR least model)
@@ -72,13 +81,17 @@ this file, then `HANDOFF.md`, then the entry for your section in
 
 ## Plain language
 
-The build enforces the rules in `guidelines/` (from
-`~/hanskellsen_docs/lineamientos_lenguaje_llano.txt`): short sentences, active
-voice, subject–verb–details order, lists instead of comma runs, no filler,
-brief paragraphs. Hard limits: 38 words per sentence, 100 words per
-paragraph, 4 or more commas means "make it a list". Readability is reported
-per section (Flesch–Kincaid for English). Terms in `guidelines/terms.txt` are
-exempt from the jargon check.
+The build enforces `guidelines/plain-language.yaml`, the machine form of
+`guidelines/lineamientos_lenguaje_llano.txt` with the thresholds the series
+used in the HAnSKELLsen audit: short sentences, active voice,
+subject–verb–details order, lists instead of comma runs, no filler, no
+repeated sequence connectors, brief paragraphs. Hard limits, all inclusive
+(reaching the number is a finding): a sentence of 38 words, a paragraph of
+100 words, a sentence with 4 commas ("make it a list"). Hard findings fail a
+final build. Passive voice, filler, jargon, connectors and runs of 4
+one-sentence paragraphs are advisory. Readability is reported per section
+(Fernández-Huerta). Terms in `guidelines/terms.txt` are exempt from the
+jargon check.
 
 ## Running Residuum
 
@@ -96,6 +109,9 @@ exempt from the jargon check.
   the build passes with it (snippets, references, plain language, template)
   and its status in `spine.yaml` is set by the owner.
 - Commit and push only when the owner asks.
+- Commits pass `build/hooks/pre-commit` (tests, spine check, draft build).
+  There is no remote CI: listings run only through Residuum's launcher, on
+  this machine. Never bypass the hook with `--no-verify`.
 
 ## Shell notes
 

@@ -1,0 +1,10 @@
+experiment fulfilledTransfer
+  Seeds: {obligationFiled(transferDuty, juan, transfer, car, pedro, private, oldDate) @ tau, Act(transferAct, juan, transfer, car, pedro, private, newDate) @ tau}
+  goal: owns(pedro, car, transferAct, private, newDate) @ tau
+  Horn: true
+  Known after close: {obligationFiled(transferDuty, juan, transfer, car, pedro, private, oldDate) @ tau, Act(transferAct, juan, transfer, car, pedro, private, newDate) @ tau, obligation(transferDuty, juan, transfer, car, pedro, private, oldDate) @ tau, compliance(transferDuty, transferAct, juan, car, pedro, private, oldDate) @ tau, patrimonialAsset(pedro, car, transferDuty, private, oldDate) @ tau, owns(pedro, car, transferDuty, private, oldDate) @ tau, transferred(transferAct, juan, car, pedro, private, newDate) @ tau, owns(pedro, car, transferAct, private, newDate) @ tau, capacity(pedro, use, car, transferDuty, private, oldDate) @ tau, capacity(pedro, use, car, transferAct, private, newDate) @ tau, do(juan, transfer, car, pedro) @ after(tau), give(juan, car, pedro) @ after(tau)}
+  execution:
+    state @ tau: juan.patrimony = juanPatrimony, juanPatrimony.assets = {car}, juanPatrimony.obligations = {}, pedro.patrimony = pedroPatrimony, pedroPatrimony.assets = {}, pedroPatrimony.rights = {}
+    apply tau -> after(tau): do(juan, transfer, car, pedro) @ after(tau)
+    apply tau -> after(tau): give(juan, car, pedro) @ after(tau)
+    state @ after(tau): juan.patrimony = juanPatrimony, juanPatrimony.assets = {}, juanPatrimony.obligations = {Record { entity: "Relation", fields: {FieldName("conduct"): Const("transfer"), FieldName("creditor"): Object(ObjectId("pedro")), FieldName("debtor"): Object(ObjectId("juan")), FieldName("mode"): Const("Doing"), FieldName("thing"): Const("car")} }}, pedro.patrimony = pedroPatrimony, pedroPatrimony.assets = {car}, pedroPatrimony.rights = {Record { entity: "Relation", fields: {FieldName("conduct"): Const("transfer"), FieldName("creditor"): Object(ObjectId("pedro")), FieldName("debtor"): Object(ObjectId("juan")), FieldName("mode"): Const("Doing"), FieldName("thing"): Const("car")} }}

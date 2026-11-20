@@ -1,0 +1,18 @@
+experiment contraposition
+  Premises: {~Notified(alice) @ tau}
+  goal: ~Served(alice) @ tau
+  Horn: false
+  search scope: rules {service}
+  query bindings: {rule service.person = alice, rule service.t = tau}
+  Known after close: {~Notified(alice) @ tau}
+  FOUR fusion: true (3 models / 16 interpretations)
+  FOUR least model: true (goal T; 2 atoms, 3 clauses; explicit scope)
+experiment otherInstance
+  Premises: {~Notified(alice) @ tau}
+  goal: ~Served(alice) @ tau
+  Horn: false
+  search scope: rules {service}
+  query bindings: {rule service.person = bob, rule service.t = tau}
+  Known after close: {~Notified(alice) @ tau}
+  FOUR fusion: false (72 models / 256 interpretations)
+  FOUR least model: false (goal N; 4 atoms, 3 clauses; explicit scope)

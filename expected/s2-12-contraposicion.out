@@ -1,0 +1,9 @@
+experiment contraposicion
+  Premises: {~avisada(ana) @ tau}
+  goal: ~atendida(ana) @ tau
+  Horn: false
+  search scope: rules {servicio}
+  query bindings: {rule servicio.persona = ana, rule servicio.t = tau}
+  Known after close: {~avisada(ana) @ tau}
+  FOUR fusion: true (3 models / 16 interpretations)
+  FOUR least model: true (goal T; 2 atoms, 3 clauses; explicit scope)
