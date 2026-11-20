@@ -150,3 +150,5 @@ Rust	external	Rust	implementation language
 cgroup	external	cgroup	Linux cgroup v2; docs: 169 hits
 CLI	external	CLI	command-line interface
 CI	external	CI	continuous integration
+hipergrafo	external	directed hypergraph	Gallo et al. 1993; book reading in s6.14, not in Residuum docs
+hiperarista	external	hyperedge	Gallo et al. 1993; book reading in s6.14, not in Residuum docs

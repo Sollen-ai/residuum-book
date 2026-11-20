@@ -117,6 +117,14 @@ names instead of a0, g, h. Added:
 - `dot` figure blocks rendered by Graphviz at build time, alt text required;
 - two-sentence references in s6.3, s6.8, s6.10 and s6.12, and the
   default-condition time rule in s6.9 (a compendium finding).
+- at the owner's request, a closing subsection of s6.14, "El cierre como
+  alcanzabilidad": the Horn closure as B-reachability in the hypergraph of
+  ground rules (Gallo et al. 1993; Dowling–Gallier 1984), requirements as the
+  seed sets that reach the goal, why hyperedges, the limits (infinite
+  grounding, FOUR, defaults) and the runner's verb graph as a coarser
+  projection. It is marked as the book's reading, not a Residuum doc claim.
+  Spine: a seventh `covers` item, owner `hypergraph_reading`, `words`
+  1400 → 1700, extra `sec:` and `require_acyclic` evidence, a third figure.
 residuum-diagrams computed its enumerations at residuum `f3c8df3`; the
 section's listings rerun the example at `d4d2282`. Known cosmetic issue:
 poppler prints "Embedded font file may be invalid" for WeasyPrint's font
@@ -139,6 +147,25 @@ The book never edits Residuum; these are requests to its owner.
 2. **A machine-readable way to tell a rejected program from a refused run**
    in the launcher's output (the build parses `test_safe.py`'s diagnostics).
 3. **A printable SurfaceAST/TypedAST** (s6.13 cannot show those stages).
+4. **The intended scope of defaults (owner position, 2026-11-20; not yet
+   developed).** The owner sees defaults as a gating mechanism for rule
+   applicability and efficacy, not as general nonmonotonic logic. Ideally
+   each contract type would be its own module; defaults exist because
+   legislation is drafted as rules with exceptions, and implementing that
+   drafting style needs default logic. That needs its own development. The
+   docs at `d4d2282` do not state this scope, and the name "default" suggests
+   Reiter-style default logic, a wider scope than intended. **Until a
+   Residuum doc states the scope, the book's criticism stands as written**
+   (s6.9, s2.10 verdict, s8.1 limitation: residual queries reject defaults;
+   the default layer is tested on selected fixtures). Ask: a doc that states
+   what defaults are for, and possibly a name that says it. When it lands,
+   pin the new commit, add the doc to the evidence of s6.9, s2.10 and s8.1,
+   and narrow the criticism there. Leads for that development (verify before
+   citing): an evidence-decided gate keeps the core monotone (in s6.5's
+   hypergraph reading, a gate decides whether a hyperedge is present); only a
+   gate on the absence of an exception is nonmonotone; Lawsky, "A Logic for
+   Statutes", and Catala's exceptions (`merigoux2021catala`) treat the same
+   drafting problem.
 
 ## Open decisions (owner)
 
@@ -157,8 +184,10 @@ The book never edits Residuum; these are requests to its owner.
      incremental Programs; the explicit-query-substitutions doc's
      "pendiente"): the book follows the code and says so.
 
-1. **Where the repo lives:** local only for now, or `Sollen-ai/residuum-book`.
-   Nothing in the build depends on it.
+1. **Where the repo lives: decided 2026-11-20.** Public at
+   `Sollen-ai/residuum-book`. Text CC BY 4.0 (`LICENSE`), build tool MIT
+   (`build/LICENSE`), Residuum excerpts keep Residuum's MIT licence.
+   Releases: see "Publishing an edition" below.
 2. **Word budget.** About 59,300 words is three times the HAnSKELLsen book. The
    owner may trim `words` per section.
 3. **Translator's judgement calls** to confirm (see `guidelines/terms.txt`):
@@ -281,3 +310,23 @@ Each phase ends with its acceptance check passing.
   - cross-references copied from another chapter ("see Listing 5");
   - unfinished final parts;
   - placeholder citations.
+
+## Publishing an edition
+
+Decided 2026-11-20: each edition is a GitHub Release of
+`Sollen-ai/residuum-book`, tagged `<book.edition>-residuum-<pinned_commit>`
+(first: `es-1.0-residuum-d4d2282`), with `residuum.pdf`,
+`residuum-booklet.pdf` and `residuum.txt` as assets. The README links
+`releases/latest/download/...`, so links never change between editions.
+
+1. `./book staleness --ref main` (after the Residuum owner updates the local
+   checkout): review every listed section; re-pin and rebuild if needed.
+2. Set `book.edition`; `./book build --all` (final, not `--draft`).
+3. Commit through the hook, tag, push, and upload the three files.
+4. Residuum side, by its owner (the book never writes there): a tag
+   `book-<edition>` on the pinned commit and a "Book" line in its README
+   pointing at `releases/latest`.
+
+`residuum-diagrams` (cited by s6.14 at `ac4727f`) has no public remote yet;
+the README says so.
+

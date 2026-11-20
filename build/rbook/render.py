@@ -49,7 +49,8 @@ a { color: inherit; text-decoration: none; }
 .title-page { page: cover; break-after: page; text-align: center; padding-top: 45mm; }
 .title-page h1.book { font-size: 20pt; margin: 0 0 8mm; }
 .title-page .authors { font-size: 11pt; margin: 0 0 1.5mm; }
-.colophon { page: cover; break-after: right; font-size: 7.5pt; padding-top: 70mm; }
+.title-page .edition { font-size: 9pt; margin: 10mm 0 0; }
+.colophon { page: cover; break-after: right; font-size: 7.5pt; padding-top: 30mm; }
 .colophon h2 { font-size: 9pt; }
 .colophon dt { font-weight: bold; } .colophon dd { margin: 0 0 1.5mm 0; overflow-wrap: anywhere; }
 nav { break-before: page; }
@@ -157,6 +158,7 @@ img { max-width: 100%; }
 {% for author in authors %}
 <p class="authors">{{ author|e }}</p>
 {% endfor %}
+{% if edition %}<p class="edition">Edición {{ edition|e }}. Describe Residuum en el commit {{ commit|e }}.</p>{% endif %}
 {% if draft %}<p class="pending">Borrador: este build admite secciones y salidas pendientes.</p>{% endif %}
 </section>
 {% if colophon %}
@@ -293,6 +295,7 @@ def render_book(book, errors, colophon=None):
             entry.html = _section(book, entry, errors)
         entry.toc = [b for b in entry.blocks if isinstance(b, Heading) and b.level == 2 and b.number]
     page = TEMPLATE.render(title=book.title, authors=book.authors, draft=book.draft, front=book.front,
+                           edition=book.edition, commit=book.commit or "",
                            parts=book.parts, back=book.back,
                            listings=book.listings, figures=book.figures, tables=book.tables,
                            colophon=colophon, print_css=PRINT_CSS)

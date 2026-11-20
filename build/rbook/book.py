@@ -65,6 +65,10 @@ class Book:
     draft: bool
     front: list = field(default_factory=list)     # unnumbered, before the table of contents
     authors: list = field(default_factory=list)   # book.authors, in spine order
+    edition: str = ""      # book.edition, e.g. es-1.0 (title page, colophon, release tag)
+    license: str = ""      # book.license, e.g. CC BY 4.0
+    license_url: str = ""  # book.license_url
+    source: str = ""       # book.source: the book's public repository
     listings: list = field(default_factory=list)
     figures: list = field(default_factory=list)
     tables: list = field(default_factory=list)
@@ -143,6 +147,14 @@ def collect(spine_path, draft=False):
         errors.append(f"{spine_path.name}: book.authors debe ser una lista de nombres")
         authors = []
     book.authors = [a.strip() for a in authors]
+    for key in ("edition", "license", "license_url", "source"):
+        value = meta.get(key)
+        if value is None:
+            continue
+        if not isinstance(value, str) or not value.strip():
+            errors.append(f"{spine_path.name}: book.{key} debe ser un texto")
+            continue
+        setattr(book, key, value.strip())
     sections_dir = root / "sections"
 
     for item in spine.get("front_matter") or []:

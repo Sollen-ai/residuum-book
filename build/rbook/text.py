@@ -44,6 +44,8 @@ def render_text(book, colophon=None):
     out = [_underline(book.title, "="), ""]
     if book.authors:
         out += [*book.authors, ""]
+    if book.edition:
+        out += [f"Edición {book.edition}. Describe Residuum en el commit {book.commit or ''}.", ""]
     if book.draft:
         out += ["Borrador: este build admite secciones y salidas pendientes.", ""]
     if colophon:

@@ -48,6 +48,10 @@ book:
   authors:               # title page, colophon and PDF metadata (owner, 2026-11-19)
     - Jesús Antonio Sesma Espinoza
     - Claude (Anthropic)
+  edition: es-1.0        # release tag es-1.0-residuum-<pinned_commit> (owner, 2026-11-20)
+  license: CC BY 4.0     # the book's text (owner, 2026-11-20); build/ is MIT
+  license_url: https://creativecommons.org/licenses/by/4.0/deed.es
+  source: https://github.com/Sollen-ai/residuum-book
 
 # Unnumbered front matter, after the title page and colophon and before the
 # table of contents. Added 2026-11-19 after an external review asked for the
@@ -113,6 +117,7 @@ owners:
   residuation_and_abduction: s6.8
   requirement_denotation: s6.14
   program_order: s6.14
+  hypergraph_reading: s6.14
   defaults: s6.9
   four_entailment: s6.10
   termination_and_limits: s6.11
@@ -675,6 +680,7 @@ parts:
           - "El orden entre programas por inclusión de cierres, el cociente extensional, el join como unión de reglas y por qué la intersección de reglas no es el meet; el teorema de contextos que lo hace observable con la CLI."
           - "Las reglas cooperan: el cierre y el requisito de una unión de reglas pueden superar la unión de sus partes; programas distintos con el mismo significado."
           - "Fidelidad: la familia de requisitos de todos los átomos determina la clase de un programa."
+          - "Lectura como grafo (del libro, no de los documentos de Residuum): el cierre Horn es la alcanzabilidad en el hipergrafo de las reglas instanciadas; el requisito reúne los conjuntos de seeds desde los que el objetivo es alcanzable; por qué hacen falta hiperaristas; qué queda fuera (instanciación infinita, defaults) y cómo se relaciona con el grafo de verbos del runner (s6.11)."
         excludes:
           - "La búsqueda y la certificación del requisito (s6.8): aquí sólo su significado."
           - "Los valores FOUR y el entailment (s6.4, s6.10); el vínculo con (p, n) se menciona y remite a s6.12."
@@ -690,13 +696,18 @@ parts:
           - "diagrams:out/fidelity_main.txt"
           - "diagrams:out/upsets3.txt"
           - "sec:s6.8"
+          - "sec:s6.3"
+          - "sec:s6.9"
+          - "sec:s6.11"
+          - "sec:s4.9"
+          - src/experiments.rs (require_acyclic)
         listings:
           - {kind: run, what: "el ejemplo del agente con nombres legibles: el cierre de cada evidencia"}
           - {kind: query, what: "la consulta residual desde varias evidencias, leída como implicación de Heyting"}
           - {kind: run, what: "dos subprogramas que por separado no envían y juntos sí"}
-        figures: "Diagramas de Hasse generados en el build desde texto (bloques dot), con texto alternativo; al menos el álgebra de requisitos y el orden entre programas."
+        figures: "Diagramas de Hasse generados en el build desde texto (bloques dot), con texto alternativo; al menos el álgebra de requisitos y el orden entre programas; además, el hipergrafo de las seis reglas."
         example: "Las seis reglas del compendio con nombres legibles: checked (a0), lowConfidence (a1), cached (a2), verified (h), send (g); r4 checked→verified, r5 verified→send, r0 checked & lowConfidence→send, r1 cached→send, r2 lowConfidence→~send, r3 cached & checked→send. Nunca a0, g, h en el texto."
-        words: 1400
+        words: 1700
 
       - id: s6.5
         title: Cierre semi-naive (perspectiva operacional)

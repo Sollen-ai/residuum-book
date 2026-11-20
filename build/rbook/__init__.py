@@ -56,4 +56,9 @@ line after a pipe table. References: ``@sec:``, ``@lst:``, ``@fig:``,
 ``@tbl:``; a capital first letter (``@Sec:``) capitalises the text.
 """
 
-DEFAULT_RESIDUUM = "/home/maitreya/residuum"
+import os as _os
+from pathlib import Path as _Path
+
+# The Residuum checkout, read-only: $RESIDUUM_REPO, else a sibling folder
+# `residuum` next to this repository (../residuum).
+DEFAULT_RESIDUUM = _os.environ.get("RESIDUUM_REPO") or str(_Path(__file__).resolve().parents[3] / "residuum")

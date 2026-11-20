@@ -20,7 +20,7 @@ this file, then `HANDOFF.md`, then the entry for your section in
   the change to the owner instead.
 - **The Residuum repository at `book.pinned_commit` decides facts.** Evidence
   paths in the spine are relative to that repository
-  (`/home/maitreya/residuum`, GitHub `Sollen-ai/residuum`). Read files at the
+  (a checkout next to this one, `../residuum`; GitHub `Sollen-ai/residuum`). Read files at the
   pinned commit (`git -C ../residuum show <commit>:<path>`), not the working
   tree.
 - **The build decides numbers and outputs.** Never type a section, listing,

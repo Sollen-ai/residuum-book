@@ -1,4 +1,4 @@
-"""Command line: ./book build | check-spine | accept | warm."""
+"""Command line: ./book build | check-spine | accept | warm | staleness."""
 
 from __future__ import annotations
 
@@ -241,6 +241,23 @@ def cmd_warm(args):
     return status
 
 
+def cmd_staleness(args):
+    """How far book.pinned_commit is behind --ref in the Residuum repository (read-only)."""
+    from . import staleness as stale
+    try:
+        book, _ = collect(args.spine, draft=True)
+    except BuildFailed as failure:
+        return fail(failure.errors)
+    try:
+        report = stale.staleness(book.spine, book.listings, args.residuum, args.ref)
+    except stale.StalenessError as error:
+        return fail([str(error)])
+    path = stale.write(report, book.root / "out")
+    print(report.markdown(), end="")
+    say(f"vigencia: {path}")
+    return 0
+
+
 def fail(errors):
     for error in errors:
         say(f"error: {error}")
@@ -284,6 +301,10 @@ def main(argv=None):
                       help="orden de Residuum (por defecto query)")
     warm.add_argument("file", nargs="?", help=f"fichero .res (por defecto {WARM_EXAMPLE} de la exportación)")
     warm.set_defaults(func=cmd_warm)
+    stale_cmd = sub.add_parser("staleness", parents=[common],
+                               help="compara el commit fijado con otra revisión de Residuum (sólo lectura)")
+    stale_cmd.add_argument("--ref", default="main", help="revisión de referencia (por defecto %(default)s)")
+    stale_cmd.set_defaults(func=cmd_staleness)
     args = parser.parse_args(argv)
     if args.command == "accept" and bool(args.all) == bool(args.labels):
         parser.error("accept necesita etiquetas o --all, no ambas")

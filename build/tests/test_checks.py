@@ -179,10 +179,11 @@ def test_spine_check_yaml_and_duplicate_ids(checked):
 
 
 def test_real_spine_passes():
-    if not Path("/home/maitreya/residuum/.git").exists():
+    from rbook import DEFAULT_RESIDUUM
+    if not (Path(DEFAULT_RESIDUUM) / ".git").exists():
         pytest.skip("no Residuum repository")
     from rbook.spinecheck import check_spine
-    _, errors, checked_count = check_spine(REPO_ROOT / "spine.yaml", "/home/maitreya/residuum")
+    _, errors, checked_count = check_spine(REPO_ROOT / "spine.yaml", DEFAULT_RESIDUUM)
     assert errors == [] and checked_count > 100
 
 

@@ -17,13 +17,14 @@ colophon, Appendix C).
 ./book check-spine [--spine PATH]         # the spine check alone (also the first build step)
 ./book accept <label>... | --all          # shows the diff, then writes expected/<label>.out
 ./book warm [--cmd query] [FILE]          # one compile-and-run of the launcher at the pinned commit
+./book staleness [--ref main]             # pinned commit vs a later Residuum revision: changed files, affected sections (out/staleness.md)
 python3 -m pytest build/tests             # tests (fake launcher)
 RBOOK_REAL_LAUNCHER=1 python3 -m pytest build/tests   # plus one real-launcher test
 ```
 
 Common options: `--spine PATH` (its folder is the project root; default
 `./spine.yaml`), `--residuum PATH` (the Residuum repository, read only;
-default `/home/maitreya/residuum`), `--cache DIR` (default `<root>/.cache`),
+default `$RESIDUUM_REPO`, else `../residuum` next to this repository), `--cache DIR` (default `<root>/.cache`),
 `--launcher PATH` (a stand-in launcher, for tests only).
 
 A final build fails on any problem: a spine check error, a missing section
